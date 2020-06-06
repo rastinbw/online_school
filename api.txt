@@ -1,0 +1,158 @@
+#file: these attributes are path to files which can be found under "path/to/public/folder/STORAGE/attribute"
+(exp: http://localhost/online-school/public/storage/images/enrollment_certificates/8ec74ace2555462663a087f3bcdc8059.png )
+--------------------------------------------------------------------------------------------------
+"CHANGE PASSWORD"
+/api/profile/changePassword POST, returns a json
+
+input: old_password:string, new_password:string, token:string
+
+output1: {"result_code": SUCCESS}
+output2: {"result_code": INVALID_PASSWORD}
+output3: {"result_code": INVALID_TOKEN}
+-----------------------------------------------------------------------------------------------------------
+"GET PROFILE"
+/api/profile/get POST, returns a json
+
+input: token:string
+
+output1: {"result_code": SUCCESS, "data": string(json_object)}
+	json_object: {
+	 "grade": json_object: {id: int, title: string},
+	 "field":  json_object: {id: int, title: string},
+	 "gender":int (0 female, 1 male),
+	 "first_name":string,
+	 "last_name":string,
+	 "email":string,
+	 "address":string,
+	 "parent_phone_number":string,
+	 "home_number":string,
+	 "national_card_image": string #file,
+	 "enrollment_certificate_image": string #file,
+	}
+
+output2: {"result_code": INVALID_TOKEN , "data": null}
+-----------------------------------------------------------------------------------------------------------
+"SET PROFILE"
+/api/profile/set POST, returns a json
+
+input: "token":string
+       "grade_id": int,
+       "field_id": int,
+       "gender":int (0 female, 1 male),
+       "first_name":string,
+       "last_name":string,
+       "email":string,
+       "address":string,
+       "parent_phone_number":string,
+       "home_number":string,
+
+output1: {"result_code": SUCCESS, "data": null}
+output2: {"result_code": INVALID_TOKEN, "data": null}
+-----------------------------------------------------------------------------------------------------------
+"UPLOAD NATIONAL CARD"
+/api/profile/upload/nationalCardImage POST, returns a json
+
+input: token: string
+       action: string (create, update, delete)
+       image: file (.png format)
+
+output1: {"result_code": SUCCESS "data": string(json_object)}
+        json_object: { path: string #file }
+
+output2: {"result_code": INVALID_TOKEN}
+-----------------------------------------------------------------------------------------------------------
+"UPLOAD ENROLLMENT CERTIFICATE"
+/api/profile/upload/enrollmentCertificateImage POST, returns a json
+
+input: token: string
+       action: string (create, update, delete)
+       image: file (.png format)
+
+output1: {"result_code": SUCCESS "data": string(json_object)}
+        json_object: { path: string #file }
+
+output2: {"result_code": INVALID_TOKEN}
+-----------------------------------------------------------------------------------------------------------
+"GET PLAN LIST"
+/api/plans/{category_id}/{tag_id}/{grade_id}/{field_id} GET, returns a json
+
+parameters:
+	tag_id, grade_id, field_id -> set null if you don't want
+	category_id -> mandatory
+
+output1: {"result_code": INVALID_TOKEN}
+output2: {"result_code": SUCCESS, data: json_array(json_object)}
+	json_object: {
+		    id:int,
+		    title:string,
+		    description:string,
+		    is_free: int,
+		    cover:string #file
+		    region_one_price: int,
+		    region_two_price: int,
+		    region_three_price: int,
+		    discount: int,
+		    category_id: int,
+		    grade: json_object: {id: int, title: string},
+            field:  json_object: {id: int, title: string},
+            installment_types: json_array:[
+                 json_object: {
+                    "id":int,
+                    "title":string,
+                    "director":int,
+                    "percentage_of_price_increase":int,
+                    "discount_disable":int (0 or 1),
+                    "span": int (days)
+                 }
+            ],
+		}
+-----------------------------------------------------------------------------------------------------------
+"GET GRADE LIST" (PAYE)
+/api/grades GET, returns a json
+
+output: {"result_code": SUCCESS, data: string(json_array(json_object))}
+	json_object: {id:int, title:string}
+-----------------------------------------------------------------------------------------------------------
+"GET FIELD LIST"
+/api/fields GET, returns a json
+
+output: {"result_code": SUCCESS, data: string(json_array(json_object))}
+	json_object: {id:int, title:string}
+-----------------------------------------------------------------------------------------------------------
+"GET CATEGORY LIST"
+/api/categories GET, returns a json
+
+output: {"result_code": SUCCESS, data: string(json_array(json_object))}
+	json_object: {id:int, title:string, description:string, logo:string #file}
+-----------------------------------------------------------------------------------------------------------
+"REGISTER IN PLAN"
+/api/plan/register POST, returns a json
+
+input: "token":string
+       "plan_id": int,
+       "payment_type": int, (YOU CAN FIND IN CONSTANTS: COMPLETE OR INSTALLMENT)
+       "installment_type_id":int (EACH PLAN HAS IT),
+       "success":int (0: FAIL , 1: SUCCESS),
+       "paid_amount": int,Level 1: if session is neither held nor online there is no access to session
+
+                          Level 2: all the sessions in a free course and all the free sessions in any none free course are accessible
+
+                          Level 3: access_denied      0      0      1      1
+                                   has_registered     0      1      0      1
+                                   --------------------------------------------
+                                   session access     0      1      *      0
+
+                          *: never happens
+
+
+                          Note-1: any '0' access to session could be converted to '1' by Level 2 rules
+                          Note-2: any '1' access to session could be converted to '0' by Level 1 rules
+                          Note-3: When access_denied in course object is 1 you can find the denial reason in deny_access_reason
+                                  CONSTANTS FILE -> public static $ACCESS_DENY_REASONS
+
+
+       "issue_tracking_no": int, (code peygiri: you send it when transaction is successful)
+
+output1: {"result_code": SUCCESS, "data": Transaction object}
+output2: {"result_code": INVALID_TOKEN, "data": null}
+-----------------------------------------------------------------------------------------------------------
