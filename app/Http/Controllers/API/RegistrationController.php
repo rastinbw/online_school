@@ -219,7 +219,7 @@ class RegistrationController extends BaseController
         if ($reset) {
             $created_at = $reset->created_at;
             $now = Carbon::now();
-            if ($now->diffInMinutes($created_at) < 5) {
+            if ($now->diffInMinutes($created_at) < 3) {
                 return $this->sendResponse(Constant::$INVALID_REQUEST, null);
             }
         }
