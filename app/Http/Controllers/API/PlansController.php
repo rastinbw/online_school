@@ -99,14 +99,20 @@ class PlansController extends BaseController
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $courses = [];
+        $all_courses = [];
         foreach($student->plans as $plan)
-            $courses = array_merge($courses, $plan->courses->toArray());
+            $all_courses = array_merge($all_courses, $plan->courses->toArray());
+
+        // removing finished courses
+        foreach ($all_courses as $course){
+            if ($course['course_done'] != 1)
+                array_push($courses, $course);
+        }
 
         $courses = array_map(function ($course){
             unset($course['pivot']);
             return $course;
         }, $courses);
-
 
         $days = [];
         foreach (Constant::$DAYS as $DAY)

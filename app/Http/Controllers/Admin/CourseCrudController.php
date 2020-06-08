@@ -60,6 +60,17 @@ class CourseCrudController extends CrudController
                 ],
                 'default' => 0,
             ],
+            [
+                'label' => 'اتمام کلاس',
+                'name' => 'course_done',
+                'type' => 'radio',
+                'inline' => true,
+                'options' => [
+                    0 => 'خیر',
+                    1 => 'بله',
+                ],
+                'default' => 0,
+            ],
         ], 'update');
 
         $this->crud->addFields([
@@ -300,15 +311,6 @@ class CourseCrudController extends CrudController
                 'model' => "App\Models\Teacher", // foreign key model
             ],
             [
-                'name' => 'guest_login',
-                'label' => 'ورود مهمان',
-                'type' => 'select_from_array',
-                'options' => [
-                    0 => 'خیر',
-                    1  => 'بله',
-                ],
-            ],
-            [
                 'name' => 'status',
                 'label' => 'وضعیت',
                 'type' => 'select_from_array',
@@ -406,6 +408,7 @@ class CourseCrudController extends CrudController
         $this->data['course'] = $this->crud->getEntry($id);
 
         $this->data['is_free'] = $course->is_free ? "بله" : "خیر";
+        $this->data['guest_login'] = $course->guest_login ? "بله" : "خیر";
         $this->data['op_login_first'] = $course->op_login_first ? "بله" : "خیر";
 
         if ($course->guest_limit)

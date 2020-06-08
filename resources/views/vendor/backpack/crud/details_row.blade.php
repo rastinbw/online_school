@@ -171,6 +171,14 @@
 
         <hr/>
 
+        <div class="row">
+            <div class="col-md-12" dir="rtl">
+                <h5 class="title">ورود مهمان : </h5> <h5 class="value">{{ $guest_login }}</h5>  <br>
+            </div>
+        </div>
+
+        <hr/>
+
         @if(isset($guest_limit))
             <div class="row">
                 <div class="col-md-12" dir="rtl">

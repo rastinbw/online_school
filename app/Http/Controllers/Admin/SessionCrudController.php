@@ -295,7 +295,7 @@ class SessionCrudController extends CrudController
         }
 
         $session->is_online = !$session->is_online;
-        $course->is_online = $session->is_online;
+        $course->is_online = !$session->is_online;
         $session->save();
         $course->save();
 
