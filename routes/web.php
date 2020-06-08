@@ -60,6 +60,7 @@ Route::post('/api/session/videolink', 'API\PlansController@getSessionVideoLink')
 Route::post('/api/session/videolink/download', 'API\PlansController@getSessionVideoDownloadLink');
 Route::get('/api/course/online', 'API\PlansController@getCurrentOnlineCourse');
 Route::post('/api/plan/free/register', 'API\PlansController@registerInFreePlan');
+Route::post('/api/plan/registered', 'API\PlansController@hasRegisteredToPlan');
 
 // Transaction Routes
 Route::post('/api/records/financial', 'API\TransactionController@getStudentFinancialRecords');

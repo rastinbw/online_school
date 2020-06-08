@@ -79,6 +79,20 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, $plans);
     }
 
+    public function hasRegisteredToPlan(Request $req){
+        $student = $this->check_token($req->input('token'));
+        if(!$student)
+            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
+
+        $plan = Plan::find($req->input('plan_id'));
+        if($plan == null)
+            return $this->sendResponse(Constant::$INVALID_ID, null);
+
+        $has_registered = ($plan->students->contains($student->id)) ? true : false;
+
+        return $this->sendResponse(Constant::$SUCCESS, $has_registered);
+    }
+
     public function getStudentCoursesByDay(Request $req){
         $student = $this->check_token($req->input('token'));
         if(!$student)
