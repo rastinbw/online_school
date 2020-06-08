@@ -231,6 +231,18 @@ class SessionCrudController extends CrudController
                     'dir' => 'rtl',
                 ],
             ],
+            [
+                'name' => 'video_download_link',
+                'label' => 'لینک دانلود ویدیو',
+                'type' => 'text',
+                'attributes' => [
+                    'dir' => 'rtl',
+                ],
+                'wrapperAttributes' => [
+                    'style' => 'margin-top:15px',
+                    'dir' => 'rtl',
+                ],
+            ],
             [ // Upload
                 'name' => 'notes',
                 'label' => 'فایل جزوه جلسه',

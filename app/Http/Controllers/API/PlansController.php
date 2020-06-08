@@ -272,6 +272,7 @@ class PlansController extends BaseController
             "finish_min" => $session->finish_min,
             "notes" => $session->notes,
             "is_free" => $session->is_free,
+            "downloadable" => $session->video_download_link != null ? 1 : 0,
             "is_online" => $session->is_online,
             "held" => $session->held,
             "has_access" => $this->getSessionAccess($course, $session, $course_access, $has_registered),
