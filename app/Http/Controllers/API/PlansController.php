@@ -119,9 +119,15 @@ class PlansController extends BaseController
             $days[$DAY] = [];
 
         foreach(Helper::removeSimilarObjects($courses) as $course){
-            $startTime = "{$course['start_hour']} : {$course['start_min']}";
-            $finishTime = "{$course['finish_hour']} : {$course['finish_min']}";
-            array_push($days[$course['online_day']], ["title" => $course['title'], "start" => $startTime, "finish" => $finishTime]);
+            array_push(
+                $days[$course['online_day']],
+                [
+                    "title" => $course['title'],
+                    "start_hour" => $course['start_hour'],
+                    "start_min" => $course['start_min'],
+                    "finish_hour" => $course['finish_hour'],
+                    "finish_min" => $course['finish_min']
+                ]);
         }
 
         return $this->sendResponse(Constant::$SUCCESS, $days);
