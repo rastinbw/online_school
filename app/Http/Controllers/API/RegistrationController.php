@@ -228,7 +228,7 @@ class RegistrationController extends BaseController
         $reset->national_code = $student->national_code;
         $reset->save();
 
-        $link = 'www.localhost/online-school/public'
+        $link = env('WWW_APP_URL')
             . '/api/student/password/reset/form/'
             . $student->token;
 
