@@ -152,7 +152,7 @@ class TransactionController extends BaseController
             }
         }
 
-        return Redirect::to(env('APP_URL'));
+        return Redirect::to(env('APP_URL') . '/dashboard/' . $transaction->id . '/transaction');
     }
 
     public function payForInstallment($token, $installment_id)
@@ -251,7 +251,7 @@ class TransactionController extends BaseController
             }
         }
 
-        return Redirect::to(env('APP_URL'));
+        return Redirect::to(env('APP_URL') . '/dashboard/' . $transaction->id . '/transaction');
     }
 
     public function getStudentFinancialRecords(Request $req)
@@ -284,6 +284,28 @@ class TransactionController extends BaseController
         ];
 
         return $this->sendResponse(Constant::$SUCCESS, $data);
+    }
+
+    public function getTransaction($transaction_id){
+        $transaction = Transaction::find($transaction_id);
+        if (!$transaction)
+            return $this->sendResponse(Constant::$INVALID_ID, null);
+
+        $result = [
+                'id' => $transaction->id,
+                'plan_id' => $transaction->plan_id,
+                'success' => $transaction->success,
+                'title' => $transaction->title,
+                'issue_tracking_no' => $transaction->issue_tracking_no,
+                'order_no' => $transaction->order_no,
+                'paid_amount' => $transaction->paid_amount,
+                'transaction_payment_type' => $transaction->transaction_payment_type,
+                'date_year' => $transaction->date_year,
+                'date_month' => $transaction->date_month,
+                'date_day' => $transaction->date_day
+        ];
+
+        return $this->sendResponse(Constant::$SUCCESS, $result);
     }
 //    public function registerInPlan(Request $req)
 //    {

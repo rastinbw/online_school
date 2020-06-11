@@ -68,6 +68,7 @@ Route::get('/api/plan/pay/{token}/{plan_id}/{payment_type}/{installment_type_id}
 Route::get('/api/plan/pay/done', 'API\TransactionController@payForPlanIsDone');
 Route::get('/api/installment/pay/{token}/{installment_id}', 'API\TransactionController@payForInstallment');
 Route::get('/api/installment/pay/done', 'API\TransactionController@payForInstallmentIsDone');
+Route::get('/api/{transaction_id}/transaction', 'API\TransactionController@getTransaction');
 
 // Tests Routes
 Route::post('/api/student/tests', 'API\TestsController@getStudentTestList');
