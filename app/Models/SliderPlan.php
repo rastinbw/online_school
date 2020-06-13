@@ -5,7 +5,7 @@ namespace App\Models;
 use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 
-class Plan extends Model
+class SliderPlan extends Model
 {
     use CrudTrait;
 
@@ -15,14 +15,11 @@ class Plan extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'plans';
+    protected $table = 'slider_plans';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = [
-        'title','region_one_price','region_two_price','region_three_price', 'is_free', 'is_full',
-        'sub_description','description', 'cover', 'category_id' ,'field_id','grade_id', 'discount', 'slider_plan_id'
-    ];
+    protected $fillable = ['cover', 'plan_id'];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -35,7 +32,7 @@ class Plan extends Model
     {
         $attribute_name = "cover";
         $disk = "public";
-        $destination_path = "images/plans";
+        $destination_path = "images/sliders";
 
         // if the image was erased
         if ($value==null) {
@@ -72,70 +69,14 @@ class Plan extends Model
             \Storage::disk('public')->delete($obj->cover);
         });
     }
-
-    public function region_price($region){
-        switch ($region){
-            case 1:
-                return $this->region_one_price;
-                break;
-            case 2:
-                return $this->region_two_price;
-                break;
-            case 3:
-                return $this->region_three_price;
-                break;
-            default:
-                return $this->region_two_price;
-        }
-    }
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function courses()
+    public function plan()
     {
-        return $this->belongsToMany('App\Models\Course');
-    }
-
-    public function sliderPlan()
-    {
-        return $this->hasOne('App\Models\SliderPlan');
-    }
-
-    public function grade()
-    {
-        return $this->belongsTo('App\Models\Grade');
-    }
-
-    public function field()
-    {
-        return $this->belongsTo('App\Models\Field');
-    }
-
-    public function students()
-    {
-        return$this->belongsToMany('App\Models\Student');
-    }
-
-    public function installments()
-    {
-        return $this->hasMany('App\Models\Installment');
-    }
-
-    public function transactions()
-    {
-        return $this->hasMany('App\Models\Transaction');
-    }
-
-    public function installment_types()
-    {
-        return $this->belongsToMany('App\Models\InstallmentType');
-    }
-
-    public function category()
-    {
-        return $this->belongsTo('App\Models\Category');
+        return $this->belongsTo('App\Models\Plan');
     }
     /*
     |--------------------------------------------------------------------------

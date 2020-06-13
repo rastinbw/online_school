@@ -74,7 +74,15 @@ class TransactionController extends BaseController
         $transaction->authority = $results['Authority'];
         $transaction->save();
 
-        return Zarinpal::redirect();
+        return Redirect::to("http://google.com")
+            ->withHeaders(
+                [
+                    'Access-Control-Allow-Origin' => '*',
+                    'Access-Control-Allow-Methods' => '*',
+                    'Access-Control-Allow-Headers' => 'Origin, X-Requested-With,Authorization, Content-Type, Accept'
+                ]
+            );
+        //return Zarinpal::redirect();
     }
 
     public function payForPlanIsDone(Request $req)

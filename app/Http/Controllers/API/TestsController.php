@@ -145,6 +145,9 @@ class TestsController extends BaseController
 
     private function getStudentTestAccess($test, $student_id)
     {
+        if (!$student_id)
+            return false;
+
         if ($test->start_date > Carbon::now())
             return false;
 
@@ -197,10 +200,14 @@ class TestsController extends BaseController
         ];
 
         if ($set_course_access){
-            $object['test_course_access'] = CourseAccess::where([
-                ['student_id', $student_id],
-                ['course_id', $test->course_id]
-            ])->first()->has_access;
+            $access = 0;
+            if ($student_id){
+                $access = CourseAccess::where([
+                    ['student_id', $student_id],
+                    ['course_id', $test->course_id]
+                ])->first()->has_access;
+            }
+            $object['test_course_access'] = $access;
         }
 
         return $object;

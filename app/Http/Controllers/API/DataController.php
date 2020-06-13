@@ -8,6 +8,7 @@ use App\Includes\Constant;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Grade;
+use App\Models\Help;
 use Illuminate\Http\Request;
 
 class DataController extends BaseController
@@ -39,5 +40,17 @@ class DataController extends BaseController
         });
 
         return $this->sendResponse(Constant::$SUCCESS, $categories);
+    }
+
+    public function getHelpList(Request $req){
+        $helps = Help::all()->map(function ($help) {
+            return [
+                'id' => $help->id,
+                'title' => $help->title,
+                'video_link' => $help->video_link
+            ];
+        });
+
+        return $this->sendResponse(Constant::$SUCCESS, $helps);
     }
 }

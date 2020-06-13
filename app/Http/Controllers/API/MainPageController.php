@@ -8,6 +8,7 @@ use App\Models\About;
 use App\Models\Course;
 use App\Models\Link;
 use App\Models\Plan;
+use App\Models\SliderPlan;
 use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
@@ -29,7 +30,8 @@ class MainPageController extends BaseController
             'links' => $this->getLinks(),
             'about' => $this->getAbout(),
             'teachers' => $this->getTeachers(),
-            'courses' => $this->getCourses()
+            'courses' => $this->getCourses(),
+            'sliders' => $this->getSliders()
         ];
 
         return $this->sendResponse(Constant::$SUCCESS, $page);
@@ -49,6 +51,10 @@ class MainPageController extends BaseController
 
     public function sendCourses(Request $req){
         return $this->sendResponse(Constant::$SUCCESS,  $this->getCourses());
+    }
+
+    public function sendSliders(Request $req){
+        return $this->sendResponse(Constant::$SUCCESS,  $this->getSliders());
     }
 
     private function getAbout(){
@@ -83,5 +89,17 @@ class MainPageController extends BaseController
         });
 
         return $courses;
+    }
+
+    public function getSliders(){
+        $sliders = SliderPlan::all();
+        $sliders = $sliders->map(function ($slider){
+            return [
+                'plan_id' => $slider->plan_id,
+                'cover' => $slider->cover
+            ];
+        });
+
+        return $sliders;
     }
 }

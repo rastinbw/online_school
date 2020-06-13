@@ -50,14 +50,15 @@ Route::post('/api/profile/upload/enrollmentCertificateImage', 'API\ProfileContro
 Route::get('/api/grades', 'API\DataController@getGradeList');
 Route::get('/api/fields', 'API\DataController@getFieldList');
 Route::get('/api/categories', 'API\DataController@getCategoryList');
+Route::get('/api/helps', 'API\DataController@getHelpList');
 
 // Plans Routes
 Route::get('/api/plans/{category_id}/{tag_id}/{grade_id}/{field_id}', 'API\PlansController@getPlanList');
 Route::post('/api/student/plans', 'API\PlansController@getStudentPlanList');
 Route::post('/api/student/coursesbyday', 'API\PlansController@getStudentCoursesByDay');
-Route::post('/api/plan/courses', 'API\PlansController@getPlanCourses');
-Route::post('/api/session/videolink', 'API\PlansController@getSessionVideoLink');
-Route::post('/api/session/videolink/download', 'API\PlansController@getSessionVideoDownloadLink');
+Route::post('/api/plan/courses/{is_public}', 'API\PlansController@getPlanCourses');
+Route::post('/api/session/videolink/{is_public}', 'API\PlansController@getSessionVideoLink');
+Route::post('/api/session/videolink/download/{is_public}', 'API\PlansController@getSessionVideoDownloadLink');
 Route::get('/api/course/online', 'API\PlansController@getCurrentOnlineCourse');
 Route::post('/api/plan/free/register', 'API\PlansController@registerInFreePlan');
 Route::post('/api/plan/registered', 'API\PlansController@hasRegisteredToPlan');

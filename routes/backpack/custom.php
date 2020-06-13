@@ -26,6 +26,8 @@ Route::group([
     CRUD::resource('transaction', 'TransactionCrudController');
     CRUD::resource('installmentType', 'InstallmentTypeCrudController');
     CRUD::resource('discountCode', 'DiscountCodeCrudController');
+    CRUD::resource('help', 'HelpCrudController');
+    CRUD::resource('sliderPlan', 'SliderPlanCrudController');
 
 
     // Course Crud Routes
