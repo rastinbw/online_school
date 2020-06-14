@@ -57,8 +57,8 @@ Route::get('/api/plans/{category_id}/{tag_id}/{grade_id}/{field_id}', 'API\Plans
 Route::post('/api/student/plans', 'API\PlansController@getStudentPlanList');
 Route::post('/api/student/coursesbyday', 'API\PlansController@getStudentCoursesByDay');
 Route::post('/api/plan/courses/{is_public}', 'API\PlansController@getPlanCourses');
-Route::post('/api/session/videolink/{is_public}', 'API\PlansController@getSessionVideoLink');
-Route::post('/api/session/videolink/download/{is_public}', 'API\PlansController@getSessionVideoDownloadLink');
+Route::post('/api/session/videolink', 'API\PlansController@getSessionVideoLink');
+Route::post('/api/session/videolink/download', 'API\PlansController@getSessionVideoDownloadLink');
 Route::get('/api/course/online', 'API\PlansController@getCurrentOnlineCourse');
 Route::post('/api/plan/free/register', 'API\PlansController@registerInFreePlan');
 Route::post('/api/plan/registered', 'API\PlansController@hasRegisteredToPlan');

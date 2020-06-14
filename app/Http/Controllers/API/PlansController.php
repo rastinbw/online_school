@@ -152,13 +152,10 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, $courses);
     }
 
-    public function getSessionVideoLink(Request $req, $is_public){
-        $student = null;
-        if (!$is_public){
-            $student = $this->check_token($req->input('token'));
-            if(!$student)
-                return $this->sendResponse(Constant::$INVALID_TOKEN, null);
-        }
+    public function getSessionVideoLink(Request $req){
+        $student = $this->check_token($req->input('token'));
+        if(!$student)
+            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $plan = Plan::find($req->input('plan_id'));
         if($plan == null)
@@ -170,13 +167,10 @@ class PlansController extends BaseController
 
         $course = Course::find($session->course_id);
 
-        $access = null;
-        if ($student){
-            $access = CourseAccess::where([
-                ['student_id', $student->id],
-                ['course_id', $course->id],
-            ])->first();
-        }
+        $access = CourseAccess::where([
+            ['student_id', $student->id],
+            ['course_id', $course->id],
+        ])->first();
 
         $has_registered = ($access) ? 1 : 0;
 
@@ -187,12 +181,9 @@ class PlansController extends BaseController
     }
 
     public function getSessionVideoDownloadLink(Request $req, $is_public){
-        $student = null;
-        if (!$is_public){
-            $student = $this->check_token($req->input('token'));
-            if(!$student)
-                return $this->sendResponse(Constant::$INVALID_TOKEN, null);
-        }
+        $student = $this->check_token($req->input('token'));
+        if(!$student)
+            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $plan = Plan::find($req->input('plan_id'));
         if($plan == null)
@@ -204,13 +195,10 @@ class PlansController extends BaseController
 
         $course = Course::find($session->course_id);
 
-        $access = null;
-        if ($student){
-            $access = CourseAccess::where([
-                ['student_id', $student->id],
-                ['course_id', $course->id],
-            ])->first();
-        }
+        $access = CourseAccess::where([
+            ['student_id', $student->id],
+            ['course_id', $course->id],
+        ])->first();
 
         $has_registered = ($access) ? 1 : 0;
 
@@ -278,10 +266,10 @@ class PlansController extends BaseController
                 return $this->buildTeacherObject($teacher);
             })[0],
             "tag" => $course->tag()->get()->map(function($tag){
-               return $this->buildTagObject($tag);
+                return $this->buildTagObject($tag);
             })[0],
             "sessions" => $course->sessions->map(function ($session) use ($access, $course, $has_registered){
-               return $this->buildSessionObject($course, $session, $access, $has_registered);
+                return $this->buildSessionObject($course, $session, $access, $has_registered);
             }),
             "tests" => $course->tests->map(function ($test) use ($student){
                 return $this->buildTestObject($test, $student);
