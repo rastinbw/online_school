@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSliderPlanIdToPlans extends Migration
+class ChangeColumnInTestRecords extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddSliderPlanIdToPlans extends Migration
      */
     public function up()
     {
-        Schema::table('plans', function (Blueprint $table) {
-            //
+        Schema::table('test_records', function (Blueprint $table) {
+            $table->text('answers')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddSliderPlanIdToPlans extends Migration
      */
     public function down()
     {
-        Schema::table('plans', function (Blueprint $table) {
-            //
+        Schema::table('test_records', function (Blueprint $table) {
+            $table->dropColumn(['answers']);
         });
     }
 }

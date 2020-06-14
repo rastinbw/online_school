@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TestRecord extends Model
+class TakingTest extends Model
 {
     /*
     |--------------------------------------------------------------------------
@@ -12,11 +12,11 @@ class TestRecord extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'test_records';
+    protected $table = 'taking_tests';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = ['test_id', 'student_id', 'score', 'answers'];
+    protected $fillable = ['test_id', 'student_id', 'last_save_date', 'enter_date'];
     // protected $hidden = [];
     // protected $dates = [];
 

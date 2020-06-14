@@ -5,7 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Includes\Constant;
 use App\Includes\Helper;
 use App\Models\CourseAccess;
+use App\Models\TakingTest;
+use App\Models\Test;
 use App\Models\TestAccess;
+use App\Models\TestRecord;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
@@ -148,6 +151,12 @@ class TestsController extends BaseController
         if (!$student_id)
             return false;
 
+        $status = $this->getStudentTestStatus($student_id, $test->id);
+        if ($status == Constant::$TEST_IS_TAKING)
+            return true;
+        else if ($status == Constant::$TEST_TAKEN)
+            return false;
+
         if ($test->start_date > Carbon::now())
             return false;
 
@@ -194,6 +203,7 @@ class TestsController extends BaseController
             'qa_access_date' => $qa_access_date,
             'qa_access_time' => $qa_access_time,
             'duration' => $this->getTestDuration($test),
+            'is_taking' => ($this->getStudentTestStatus($student_id, $test->id) == Constant::$TEST_IS_TAKING) ? 1 : 0,
             'reached_start_date_time' => $this->checkIfTestIsRemaining($test) ? 0 : 1,
             'passed_finish_date_time' => $this->checkIfTestIsTaken($test) ? 1 : 0,
             'test_access' => $this->getStudentTestAccess($test, $student_id) ? 1 : 0
@@ -213,4 +223,84 @@ class TestsController extends BaseController
         return $object;
     }
 
+    public function getStudentTestStatus($student_id, $test_id){
+        $taking = TakingTest::where([
+            ['student_id', $student_id],
+            ['test_id', $test_id],
+        ])->first();
+
+        if (!$taking)
+            return Constant::$TEST_NOT_TAKEN;
+
+        $test = Test::find($test_id);
+        $duration = $this->getTestDuration($test);
+        $finish_date = new Carbon($taking->enter_date);
+        $finish_date->addMinutes($duration);
+
+        if ($finish_date <= Carbon::now())
+            return Constant::$TEST_TAKEN;
+        else
+            return Constant::$TEST_IS_TAKING;
+    }
+
+    public function getTakingTestDuration($taking){
+        $test = Test::find($taking->test_id);
+        $duration = $this->getTestDuration($test);
+        $finish_date = new Carbon($taking->enter_date);
+        $finish_date->addMinutes($duration);
+
+        if ($finish_date <= Carbon::now())
+            return 0;
+        else
+            return $finish_date->diffInMinutes(Carbon::now());
+    }
+
+    public function enterTest(Request $req){
+        $student = $this->check_token($req->input('token'));
+        if(!$student)
+            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
+
+        $test = Test::find($req->input('test_id'));
+
+        $taking = TakingTest::where([
+            ['student_id', $student->id],
+            ['test_id', $test->id],
+        ])->first();
+
+        if ($taking){
+            $duration = $this->getTakingTestDuration($taking);
+        }else{
+            $duration = $this->getTestDuration($test);
+            $taking = new TakingTest();
+            $taking->student_id = $student->id;
+            $taking->test_id = $test->id;
+            $taking->enter_date = Carbon::now();
+            $taking->save();
+        }
+
+        return $this->sendResponse(
+            Constant::$SUCCESS,
+            $duration
+        );
+    }
+
+    public function saveTestRecord(Request $req){
+        $student = $this->check_token($req->input('token'));
+        if(!$student)
+            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
+
+        $test = Test::find($req->input('test_id'));
+
+        $record = TestRecord::where([
+            ['student_id', $student->id],
+            ['test_id', $test->id],
+        ])->first();
+        $record->answers = $req->input('answers');
+        $record->save();
+
+        return $this->sendResponse(
+            Constant::$SUCCESS,
+            null
+        );
+    }
 }

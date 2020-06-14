@@ -73,5 +73,7 @@ Route::get('/api/{transaction_id}/transaction', 'API\TransactionController@getTr
 
 // Tests Routes
 Route::post('/api/student/tests', 'API\TestsController@getStudentTestList');
+Route::post('/api/test/enter', 'API\TestsController@enterTest');
+Route::post('/api/test/save', 'API\TestsController@saveTestRecord');
 
 // Arvan Routes

@@ -708,6 +708,7 @@ class ComposerStaticInitf092cf6aaed29093d6014e0cefbb52b3
         'App\\Models\\Student' => __DIR__ . '/../..' . '/app/Models/Student.php',
         'App\\Models\\StudentPasswordReset' => __DIR__ . '/../..' . '/app/Models/StudentPasswordReset.php',
         'App\\Models\\Tag' => __DIR__ . '/../..' . '/app/Models/Tag.php',
+        'App\\Models\\TakingTest' => __DIR__ . '/../..' . '/app/Models/TakingTest.php',
         'App\\Models\\Teacher' => __DIR__ . '/../..' . '/app/Models/Teacher.php',
         'App\\Models\\Test' => __DIR__ . '/../..' . '/app/Models/Test.php',
         'App\\Models\\TestAccess' => __DIR__ . '/../..' . '/app/Models/TestAccess.php',

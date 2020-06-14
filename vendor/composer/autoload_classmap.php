@@ -115,6 +115,7 @@ return array(
     'App\\Models\\Student' => $baseDir . '/app/Models/Student.php',
     'App\\Models\\StudentPasswordReset' => $baseDir . '/app/Models/StudentPasswordReset.php',
     'App\\Models\\Tag' => $baseDir . '/app/Models/Tag.php',
+    'App\\Models\\TakingTest' => $baseDir . '/app/Models/TakingTest.php',
     'App\\Models\\Teacher' => $baseDir . '/app/Models/Teacher.php',
     'App\\Models\\Test' => $baseDir . '/app/Models/Test.php',
     'App\\Models\\TestAccess' => $baseDir . '/app/Models/TestAccess.php',

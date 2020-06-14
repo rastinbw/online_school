@@ -44,17 +44,25 @@ class PlanCrudController extends CrudController
         | CrudPanel Configuration
         |--------------------------------------------------------------------------
         */
-        $this->crud->addField(
+        $this->crud->addFields(
             [
-                'label' => 'تکمیل ظرفیت',
-                'name' => 'is_full',
-                'type' => 'radio',
-                'inline' => true,
-                'options' => [
-                    0 => 'خیر',
-                    1 => 'بله'
+                [
+                    'label' => 'تکمیل ظرفیت',
+                    'name' => 'is_full',
+                    'type' => 'radio',
+                    'inline' => true,
+                    'options' => [
+                        0 => 'خیر',
+                        1 => 'بله'
+                    ],
+                    'default' => 0,
                 ],
-                'default' => 0,
+                [
+                    'name' => 'change_course_limit',
+                    'label' => 'محدودیت تغییر کلاس های طرح ثبت نام شده',
+                    'type' => 'checkbox',
+                    'default' => true,
+                ],
             ], 'update');
 
         $this->crud->addFields([
@@ -141,7 +149,7 @@ class PlanCrudController extends CrudController
                     1 => 'بله'
                 ],
                 'hide_when' => [
-                    1 => ['region_three_price', 'region_two_price', 'region_one_price', 'discount','installment_types']
+                    1 => ['region_three_price', 'region_two_price', 'region_one_price', 'discount', 'installment_types']
                 ],
                 'wrapperAttributes' => [
                     'style' => 'margin-top:15px',
@@ -256,7 +264,7 @@ class PlanCrudController extends CrudController
                 'type' => 'select_from_array',
                 'options' => [
                     0 => 'خیر',
-                    1  => 'بله',
+                    1 => 'بله',
                 ],
             ],
         ]);
@@ -267,7 +275,7 @@ class PlanCrudController extends CrudController
             'type' => 'select2',
             'label' => 'پایه',
         ], function () {
-            return Grade::all() ->keyBy('id')->pluck('title', 'id')->toArray();
+            return Grade::all()->keyBy('id')->pluck('title', 'id')->toArray();
         }, function ($value) { // if the filter is active
             $this->crud->addClause('where', 'grade_id', $value);
         });
@@ -287,7 +295,7 @@ class PlanCrudController extends CrudController
             'type' => 'select2',
             'label' => 'دسته بندی',
         ], function () {
-            return Category::all() ->keyBy('id')->pluck('title', 'id')->toArray();
+            return Category::all()->keyBy('id')->pluck('title', 'id')->toArray();
         }, function ($value) { // if the filter is active
             $this->crud->addClause('where', 'category_id', $value);
         });
@@ -295,8 +303,8 @@ class PlanCrudController extends CrudController
         $this->crud->addFilter([ // dropdown filter
             'name' => 'is_free',
             'type' => 'dropdown',
-            'label'=> 'رایگان',
-        ], ['0'=>'خیر', '1'=>'بله'], function($value) { // if the filter is active
+            'label' => 'رایگان',
+        ], ['0' => 'خیر', '1' => 'بله'], function ($value) { // if the filter is active
             $this->crud->addClause('where', 'is_free', $value);
         });
 
@@ -307,18 +315,21 @@ class PlanCrudController extends CrudController
         $this->crud->allowAccess('details_row');
     }
 
-    public function exportPlanStudents($plan_id){
+    public function exportPlanStudents($plan_id)
+    {
         $export = new StudentsExport($plan_id);
         return Excel::download($export, 'لیست دانش آموزان.xlsx');
     }
 
-    public function importPlanStudents($plan_id){
+    public function importPlanStudents($plan_id)
+    {
         return view('vendor/backpack/crud/import_plan_students')
             ->with('title', 'وارد کردن لیست دانش آموزان کلاس')
             ->with('plan_id', $plan_id);
     }
 
-    public function importPlanStudentsExcel(Request $req){
+    public function importPlanStudentsExcel(Request $req)
+    {
         Excel::import(
             new PlanStudentsImport($req->input('plan_id')),
             $req->file('file')->getRealPath()
@@ -342,7 +353,7 @@ class PlanCrudController extends CrudController
         $this->data['title'] = trans('backpack::crud.edit') . ' ' . $this->crud->entity_name;
         $this->data['id'] = $id;
 
-        $this->data['extra'] = json_encode(['old_courses' =>  $this->data['entry']['courses']]);
+        $this->data['extra'] = json_encode(['old_courses' => $this->data['entry']['courses']]);
 
         return view($this->crud->getEditView(), $this->data);
     }
@@ -380,11 +391,11 @@ class PlanCrudController extends CrudController
             abort(500);
         }
 
-        foreach ($request->input('courses') as $id){
+        foreach ($request->input('courses') as $id) {
             $course = Course::find($id);
-            if($request->input('is_free') && !$course->is_free)
+            if ($request->input('is_free') && !$course->is_free)
                 array_push($errors, ".کلاس {$course->title} رایگان نمیباشد");
-            else if(!$request->input('is_free') && $course->is_free)
+            else if (!$request->input('is_free') && $course->is_free)
                 array_push($errors, ".کلاس {$course->title} رایگان میباشد");
         }
 
@@ -411,23 +422,27 @@ class PlanCrudController extends CrudController
             abort(500);
         }
 
-        if(Plan::find($request->input('id'))->students->count() > 0){
-            $old_courses = json_decode($request->input('extra'))->old_courses;
-            $old_courses_ids = array_map(function ($course){ return $course->id; }, $old_courses);
-            sort($old_courses_ids);
+        if ($request->input('change_course_limit')) {
+            if (Plan::find($request->input('id'))->students->count() > 0) {
+                $old_courses = json_decode($request->input('extra'))->old_courses;
+                $old_courses_ids = array_map(function ($course) {
+                    return $course->id;
+                }, $old_courses);
+                sort($old_courses_ids);
 
-            $new_courses_ids = $request->input('courses');
-            sort($new_courses_ids);
+                $new_courses_ids = $request->input('courses');
+                sort($new_courses_ids);
 
-            if($old_courses_ids != $new_courses_ids)
-                return back()->withErrors(['custom_fail' => true, 'errors' => ".دانش آموزانی در این طرح ثبت نام نموده اند. امکان تغییر کلاس های آن را ندارید"]);
+                if ($old_courses_ids != $new_courses_ids)
+                    return back()->withErrors(['custom_fail' => true, 'errors' => ".دانش آموزانی در این طرح ثبت نام نموده اند. امکان تغییر کلاس های آن را ندارید"]);
+            }
         }
 
-        foreach ($request->input('courses') as $id){
+        foreach ($request->input('courses') as $id) {
             $course = Course::find($id);
-            if($request->input('is_free') && !$course->is_free)
+            if ($request->input('is_free') && !$course->is_free)
                 array_push($errors, ".کلاس {$course->title} رایگان نمیباشد");
-            else if(!$request->input('is_free') && $course->is_free)
+            else if (!$request->input('is_free') && $course->is_free)
                 array_push($errors, ".کلاس {$course->title} رایگان میباشد");
         }
 
@@ -443,7 +458,7 @@ class PlanCrudController extends CrudController
     public function getBase64ImageSize($base64Image)
     { //return memory size in B, KB, MB
         try {
-            $size_in_bytes = (int) (strlen(rtrim($base64Image, '=')) * 3 / 4);
+            $size_in_bytes = (int)(strlen(rtrim($base64Image, '=')) * 3 / 4);
             $size_in_kb = $size_in_bytes / 1024;
 
             return $size_in_kb;
