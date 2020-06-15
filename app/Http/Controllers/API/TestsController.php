@@ -204,6 +204,7 @@ class TestsController extends BaseController
             'qa_access_time' => $qa_access_time,
             'duration' => $this->getTestDuration($test),
             'is_taking' => ($this->getStudentTestStatus($student_id, $test->id) == Constant::$TEST_IS_TAKING) ? 1 : 0,
+            'has_taken' => ($this->getStudentTestStatus($student_id, $test->id) == Constant::$TEST_TAKEN) ? 1 : 0,
             'reached_start_date_time' => $this->checkIfTestIsRemaining($test) ? 0 : 1,
             'passed_finish_date_time' => $this->checkIfTestIsTaken($test) ? 1 : 0,
             'test_access' => $this->getStudentTestAccess($test, $student_id) ? 1 : 0
@@ -278,9 +279,15 @@ class TestsController extends BaseController
             $taking->save();
         }
 
+        $data = [
+            'duration' => $duration,
+            'questions' => $test->questions_file,
+            'questions_count' => sizeof(json_decode($test->options))
+        ];
+
         return $this->sendResponse(
             Constant::$SUCCESS,
-            $duration
+            $data
         );
     }
 
