@@ -279,10 +279,16 @@ class TestsController extends BaseController
             $taking->save();
         }
 
+        $record = TestRecord::where([
+            ['student_id', $student->id],
+            ['test_id', $test->id],
+        ])->first();
+
         $data = [
             'duration' => $duration,
             'questions' => $test->questions_file,
-            'questions_count' => sizeof(json_decode($test->options))
+            'questions_count' => sizeof(json_decode($test->options)),
+            'answers' => ($record) ? $record->answers : null
         ];
 
         return $this->sendResponse(
