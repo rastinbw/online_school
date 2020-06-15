@@ -27,7 +27,6 @@ class SliderPlanRequest extends FormRequest
     {
         return [
             'cover' => 'required',
-            'plan_id' => 'required',
         ];
     }
 

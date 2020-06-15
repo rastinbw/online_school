@@ -23,6 +23,7 @@ class Constant
     public static $PLAN_NOT_FREE = 1123;
     public static $INVALID_INSTALLMENT_ID = 1124;
     public static $DOWNLOAD_UNAVAILABLE = 1125;
+    public static $NO_ANSWERS = 1126;
 
     public static $GENDER_MALE = 1;
     public static $GENDER_MALE_TITLE = "پسر";
@@ -80,5 +81,6 @@ class Constant
     public static $TEST_NOT_TAKEN = "test_not_taken";
     public static $TEST_IS_TAKING = "test_is_taking";
     public static $TEST_TAKEN = "test_taken";
+
 
 }

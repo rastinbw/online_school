@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Includes\Constant;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
@@ -34,21 +35,6 @@ class SliderPlanCrudController extends CrudController
         */
 
         $this->crud->addFields([
-            [ // Select
-                'label' => "* طرح",
-                'type' => 'select2',
-                'name' => 'plan_id', // the db column for the foreign key
-                'entity' => 'plan', // the method that defines the relationship in your Model
-                'attribute' => 'title', // foreign key attribute that is shown to user
-                'model' => "App\Models\Plan", // foreign key model
-                'allows_null' => false,
-                'attributes' => [
-                    'dir' => 'rtl',
-                ],
-                'wrapperAttributes' => [
-                    'dir' => 'rtl',
-                ],
-            ],
             [
                 'label' => '<label style="color:#e55619">( فایل انتخابی باید به فرمت
                             <label style="font-family:Arial, Helvetica, sans-serif;">jpeg, jpg</label> و حداکثر حجم 5 مگابایت باشد )</label> کاور *',
@@ -59,6 +45,31 @@ class SliderPlanCrudController extends CrudController
                 'aspect_ratio' => 2, // ommit or set to 0 to allow any aspect ratio
                 'disk' => 'public', // in case you need to show images from a different disk
                 // 'prefix' => 'images' // in case you only store the filename in the database, this text will be prepended to the database value
+            ],
+            [ // Select
+                'label' => "طرح",
+                'type' => 'select2',
+                'name' => 'plan_id', // the db column for the foreign key
+                'entity' => 'plan', // the method that defines the relationship in your Model
+                'attribute' => 'title', // foreign key attribute that is shown to user
+                'model' => "App\Models\Plan", // foreign key model
+                'attributes' => [
+                    'dir' => 'rtl',
+                ],
+                'wrapperAttributes' => [
+                    'dir' => 'rtl',
+                ],
+            ],
+            [
+                'name' => 'link',
+                'label' => 'لینک',
+                'type' => 'text',
+                'attributes' => [
+                    'dir' => 'rtl',
+                ],
+                'wrapperAttributes' => [
+                    'dir' => 'rtl',
+                ],
             ],
         ], 'update/create/both');
 

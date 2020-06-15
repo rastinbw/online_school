@@ -24,6 +24,7 @@ return array(
     'App\\Http\\Controllers\\API\\SkyRoomController' => $baseDir . '/app/Http/Controllers/API/SkyRoomController.php',
     'App\\Http\\Controllers\\API\\TestsController' => $baseDir . '/app/Http/Controllers/API/TestsController.php',
     'App\\Http\\Controllers\\API\\TransactionController' => $baseDir . '/app/Http/Controllers/API/TransactionController.php',
+    'App\\Http\\Controllers\\API\\WorkbookController' => $baseDir . '/app/Http/Controllers/API/WorkbookController.php',
     'App\\Http\\Controllers\\Admin\\AboutCrudController' => $baseDir . '/app/Http/Controllers/Admin/AboutCrudController.php',
     'App\\Http\\Controllers\\Admin\\AccessController' => $baseDir . '/app/Http/Controllers/Admin/AccessController.php',
     'App\\Http\\Controllers\\Admin\\AdminController' => $baseDir . '/app/Http/Controllers/Admin/AdminController.php',

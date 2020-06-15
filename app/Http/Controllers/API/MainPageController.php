@@ -96,6 +96,7 @@ class MainPageController extends BaseController
         $sliders = $sliders->map(function ($slider){
             return [
                 'plan_id' => $slider->plan_id,
+                'link' => $slider->link,
                 'cover' => $slider->cover
             ];
         });

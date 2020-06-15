@@ -617,6 +617,7 @@ class ComposerStaticInitf092cf6aaed29093d6014e0cefbb52b3
         'App\\Http\\Controllers\\API\\SkyRoomController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/SkyRoomController.php',
         'App\\Http\\Controllers\\API\\TestsController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/TestsController.php',
         'App\\Http\\Controllers\\API\\TransactionController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/TransactionController.php',
+        'App\\Http\\Controllers\\API\\WorkbookController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/WorkbookController.php',
         'App\\Http\\Controllers\\Admin\\AboutCrudController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AboutCrudController.php',
         'App\\Http\\Controllers\\Admin\\AccessController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AccessController.php',
         'App\\Http\\Controllers\\Admin\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AdminController.php',

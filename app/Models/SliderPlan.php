@@ -19,7 +19,7 @@ class SliderPlan extends Model
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = ['cover', 'plan_id'];
+    protected $fillable = ['cover', 'plan_id', 'link'];
     // protected $hidden = [];
     // protected $dates = [];
 
