@@ -62,18 +62,27 @@ Route::post('/api/session/videolink/download', 'API\PlansController@getSessionVi
 Route::get('/api/course/online', 'API\PlansController@getCurrentOnlineCourse');
 Route::post('/api/plan/free/register', 'API\PlansController@registerInFreePlan');
 Route::post('/api/plan/registered', 'API\PlansController@hasRegisteredToPlan');
+Route::get('/api/plan/{plan_id}/info', 'API\PlansController@getPlanInfo');
 
 // Transaction Routes
 Route::post('/api/records/financial', 'API\TransactionController@getStudentFinancialRecords');
-Route::get('/api/plan/pay/{token}/{plan_id}/{payment_type}/{installment_type_id}/{discount_code}', 'API\TransactionController@payForPlan');
 Route::get('/api/plan/pay/done', 'API\TransactionController@payForPlanIsDone');
 Route::get('/api/installment/pay/{token}/{installment_id}', 'API\TransactionController@payForInstallment');
 Route::get('/api/installment/pay/done', 'API\TransactionController@payForInstallmentIsDone');
 Route::get('/api/{transaction_id}/transaction', 'API\TransactionController@getTransaction');
+Route::get('/api/payment',  function (){
+    return view('payment');
+});
+Route::group(['middleware' => ['cors']], function () {
+    Route::get('/api/plan/pay/{token}/{plan_id}/{payment_type}/{installment_type_id}/{discount_code}', 'API\TransactionController@payForPlan');
+});
 
 // Tests Routes
 Route::post('/api/student/tests', 'API\TestsController@getStudentTestList');
 Route::post('/api/test/enter', 'API\TestsController@enterTest');
 Route::post('/api/test/save', 'API\TestsController@saveTestRecord');
+
+// Workbook Routes
+Route::post('/api/student/test/workbook', 'API\WorkbookController@getWorkbook');
 
 // Arvan Routes

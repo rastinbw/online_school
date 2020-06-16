@@ -27,10 +27,22 @@ class WorkbookController extends BaseController
             ['test_id', $test->id],
         ])->first();
 
-        if (!$record->answers)
+        if ($record && !$record->answers)
             return $this->sendResponse(Constant::$NO_ANSWERS, null);
 
-        
+        $answers = json_decode($record->answers);
+        $options = json_decode($test->options);
+        $factors = json_decode($test->factors);
 
+
+        return $this->sendResponse(Constant::$SUCCESS, $this->getOptionAnswer($options, "5"));
+
+    }
+
+    private function getOptionAnswer($options, $q_number){
+        foreach ($options as $option){
+            if ($option->q_number == $q_number)
+                return $option->co_number;
+        }
     }
 }

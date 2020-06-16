@@ -4,12 +4,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Admin\AccessController;
-use App\Http\Controllers\Admin\CourseTestCrudController;
 use App\Includes\Constant;
-use App\Includes\Helper;
-use App\Includes\HttpError;
-use App\Includes\Skyroom;
-use App\Models\Course;
 use App\Models\CourseAccess;
 use App\Models\DiscountCode;
 use App\Models\Installment;
@@ -22,66 +17,58 @@ use Hekmatinasser\Verta\Verta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Zarinpal\Laravel\Facade\Zarinpal;
-use function foo\func;
 
 class TransactionController extends BaseController
 {
     public function payForPlan($token, $plan_id, $payment_type, $installment_type_id, $discount_code)
     {
-        $student = $this->check_token($token);
-        if (!$student)
-            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
+//        $student = $this->check_token($token);
+//        if (!$student)
+//            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
+//
+//        $installment_type_id = ($installment_type_id != 'null') ? $installment_type_id : null;
+//        $discount_code = ($discount_code != 'null') ? $discount_code : null;
+//
+//        $plan = Plan::find($plan_id);
+//        $region_price = $plan->region_price($student->region);
+//        $installment_type = InstallmentType::find($installment_type_id);
+//        $price = $this->getPrice($region_price, $plan->discount, $discount_code, $installment_type);
+//
+//        if ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
+//            $amount = $this->calculateInstallments($price, $installment_type)[0];
+//        else
+//            $amount = $price;
+//
+//        // creating transaction
+//        $time = Verta::now();
+//        $transaction = new Transaction();
+//        $transaction->order_no = $this->getOrderNo();
+//        $transaction->title = ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
+//            ? $plan->title . " (پیش پرداخت)"
+//            : $plan->title;
+//        $transaction->paid_amount = $amount;
+//        $transaction->plan_id = $plan->id;
+//        $transaction->date_year = $time->year;
+//        $transaction->date_month = $time->month;
+//        $transaction->date_day = $time->day;
+//        $transaction->transaction_payment_type = $payment_type;
+//        $transaction->installment_type_id = ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
+//            ? $installment_type_id : null;
+//        $transaction->student_id = $student->id;
+//        $transaction->discount_code = $discount_code;
+//
+//        $results = Zarinpal::request(
+//            env('APP_URL') . '/api/plan/pay/done',
+//            $amount,
+//            $transaction->title,
+//            $student->email,
+//            $student->phone_number
+//        );
+//
+//        $transaction->authority = $results['Authority'];
+//        $transaction->save();
 
-        $installment_type_id = ($installment_type_id != 'null') ? $installment_type_id : null;
-        $discount_code = ($discount_code != 'null') ? $discount_code : null;
-
-        $plan = Plan::find($plan_id);
-        $region_price = $plan->region_price($student->region);
-        $installment_type = InstallmentType::find($installment_type_id);
-        $price = $this->getPrice($region_price, $plan->discount, $discount_code, $installment_type);
-
-        if ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
-            $amount = $this->calculateInstallments($price, $installment_type)[0];
-        else
-            $amount = $price;
-
-        // creating transaction
-        $time = Verta::now();
-        $transaction = new Transaction();
-        $transaction->order_no = $this->getOrderNo();
-        $transaction->title = ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
-            ? $plan->title . " (پیش پرداخت)"
-            : $plan->title;
-        $transaction->paid_amount = $amount;
-        $transaction->plan_id = $plan->id;
-        $transaction->date_year = $time->year;
-        $transaction->date_month = $time->month;
-        $transaction->date_day = $time->day;
-        $transaction->transaction_payment_type = $payment_type;
-        $transaction->installment_type_id = ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
-            ? $installment_type_id : null;
-        $transaction->student_id = $student->id;
-        $transaction->discount_code = $discount_code;
-
-        $results = Zarinpal::request(
-            env('APP_URL') . '/api/plan/pay/done',
-            $amount,
-            $transaction->title,
-            $student->email,
-            $student->phone_number
-        );
-
-        $transaction->authority = $results['Authority'];
-        $transaction->save();
-
-        return Redirect::to("http://google.com")
-            ->withHeaders(
-                [
-                    'Access-Control-Allow-Origin' => '*',
-                    'Access-Control-Allow-Methods' => '*',
-                    'Access-Control-Allow-Headers' => 'Origin, X-Requested-With,Authorization, Content-Type, Accept'
-                ]
-            );
+        return Redirect::to("api/payment");
         //return Zarinpal::redirect();
     }
 
@@ -470,33 +457,35 @@ class TransactionController extends BaseController
     {
         $result = [];
         foreach ($student->plans as $plan) {
-            $result[$plan->title] = [];
-
             $installments = Installment::where([
                 ['student_id', $student->id],
                 ['plan_id', $plan->id],
             ])->get();
 
-            $count = 1;
-            foreach ($installments as $installment) {
-                $title = Plan::find($installment->plan_id)->title;
-                $can_pay = $this->canPay($installment, $installments);
+            if (sizeof($installments) > 0){
+                $result[$plan->title] = [];
 
-                array_push($result[$title], [
-                    'id' => $installment->id,
-                    'number' => $count,
-                    'amount' => $installment->amount,
-                    'installment_type_id' => $installment->installment_type_id,
-                    'transaction_id' => $installment->transaction_id,
-                    'is_region_fee_installment' => $installment->is_region_fee_installment,
-                    'plan_id' => $plan->id,
-                    'year' => $installment->date_year,
-                    'month' => $installment->date_month,
-                    'day' => $installment->date_day,
-                    'can_pay' => $can_pay,
-                    'must_pay' => ($installment->date <= Carbon::now() && $can_pay) ? 1 : 0
-                ]);
-                $count++;
+                $count = 1;
+                foreach ($installments as $installment) {
+                    $title = Plan::find($installment->plan_id)->title;
+                    $can_pay = $this->canPay($installment, $installments);
+
+                    array_push($result[$title], [
+                        'id' => $installment->id,
+                        'number' => $count,
+                        'amount' => $installment->amount,
+                        'installment_type_id' => $installment->installment_type_id,
+                        'transaction_id' => $installment->transaction_id,
+                        'is_region_fee_installment' => $installment->is_region_fee_installment,
+                        'plan_id' => $plan->id,
+                        'year' => $installment->date_year,
+                        'month' => $installment->date_month,
+                        'day' => $installment->date_day,
+                        'can_pay' => $can_pay,
+                        'must_pay' => ($installment->date <= Carbon::now() && $can_pay) ? 1 : 0
+                    ]);
+                    $count++;
+                }
             }
         }
 

@@ -133,6 +133,16 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, $days);
     }
 
+    public function getPlanInfo($plan_id){
+        $plan = Plan::find($plan_id);
+        if($plan == null)
+            return $this->sendResponse(Constant::$INVALID_ID, null);
+
+        $data = $this->buildPlanObjectWithCourses($plan);
+
+        return $this->sendResponse(Constant::$SUCCESS, $data);
+    }
+
     public function getPlanCourses(Request $req, $is_public){
         $student = null;
         if (!$is_public){
@@ -277,6 +287,32 @@ class PlansController extends BaseController
         ];
     }
 
+    private function buildSimpleCourseObject($course){
+        return [
+            "id" => $course->id,
+            "title" => $course->title,
+            "launch_date_year" => $course->launch_date_year,
+            "launch_date_month" => $course->launch_date_month,
+            "launch_date_day" => $course->launch_date_day,
+            "online_day" => $course->online_day,
+            "start_hour" => $course->start_hour,
+            "start_min" => $course->start_min,
+            "finish_hour" => $course->finish_hour,
+            "finish_min" => $course->finish_min,
+            "status" => $course->status,
+            "room_url" => $course->room_url,
+            "is_online" => $course->is_online,
+            "is_free" => $course->is_free,
+            "description" => $course->description,
+            "teacher" => $course->teacher()->get()->map(function($teacher){
+                return $this->buildTeacherObject($teacher);
+            })[0],
+            "tag" => $course->tag()->get()->map(function($tag){
+                return $this->buildTagObject($tag);
+            })[0],
+        ];
+    }
+
     private function buildSessionObject($course, $session, $course_access, $has_registered){
         return [
             "id" => $session->id,
@@ -353,6 +389,35 @@ class PlansController extends BaseController
         return $plan;
     }
 
+    private function buildPlanObjectWithCourses($plan)
+    {
+        $grade = ($plan->grade) ? $plan->grade->title : "همه پایه ها";
+        $field = ($plan->field) ? $plan->field->title : "همه رشته ها";
+
+        $courses = $plan->courses->map(function($course){
+            return $this->buildSimpleCourseObject($course);
+        });
+
+        $plan = [
+            'id' => $plan->id,
+            'title' => $plan->title,
+            'cover' => $plan->cover,
+            'description' => $plan->description,
+            'is_free' => $plan->is_free,
+            'is_full' => $plan->is_full,
+            'discount' => $plan->discount,
+            'region_one_price' => $plan->region_one_price,
+            'region_two_price' => $plan->region_two_price,
+            'region_three_price' => $plan->region_three_price,
+            'category_id' => $plan->category->id,
+            'grade' => $grade,
+            'field' => $field,
+            'courses' => $courses
+        ];
+
+        return $plan;
+    }
+
     private function getPlansByTag($tag_id){
         $courses = Course::where('tag_id', $tag_id)->get();
 
@@ -406,5 +471,7 @@ class PlansController extends BaseController
         $tc = new TestsController();
         return $tc->buildTestObject($test, $sid, false);
     }
+
+
 
 }
