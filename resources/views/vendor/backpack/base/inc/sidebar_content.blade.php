@@ -16,6 +16,7 @@ $one_record_id = 1;
 <li><a href="{{ backpack_url('discountCode') }}"><span>کدهای تخفیف</span> <i class="fa fa-behance"></i></a></li>
 <li><a href="{{ backpack_url('help') }}"><span>آموزش ها</span> <i class="fa fa-tree"></i></a></li>
 <li><a href="{{ backpack_url('sliderPlan') }}"><span>طرح های اسلایدر</span> <i class="fa fa-image"></i></a></li>
+<li><a href="{{ backpack_url('smsTemplate') }}"><span>قالب های پیامکی</span> <i class="fa fa-envelope"></i></a></li>
 <li><a href='{{ backpack_url('transaction') }}'><span>تراکنش ها</span> <i class='fa fa-money'></i></a></li>
 <li><a href="{{url(URL::to('admin/link/'.$one_record_id.'/edit'))}}"><span>لینک های ارتباطی</span> <i class="fa fa-link"></i></a></li>
 <li><a href="{{url(URL::to('admin/about/'.$one_record_id.'/edit'))}}"><span>درباره ما</span> <i class="fa fa-info-circle"></i></a></li>

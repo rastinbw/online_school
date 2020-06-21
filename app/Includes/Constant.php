@@ -23,7 +23,8 @@ class Constant
     public static $PLAN_NOT_FREE = 1123;
     public static $INVALID_INSTALLMENT_ID = 1124;
     public static $DOWNLOAD_UNAVAILABLE = 1125;
-    public static $NO_ANSWERS = 1126;
+    public static $NO_WORKBOOK = 1126 ;
+    public static $NO_RECORD = 1127;
 
     public static $GENDER_MALE = 1;
     public static $GENDER_MALE_TITLE = "پسر";
@@ -82,5 +83,17 @@ class Constant
     public static $TEST_IS_TAKING = "test_is_taking";
     public static $TEST_TAKEN = "test_taken";
 
-
+    public static $RANK = "rank";
+    public static $QUESTIONS_COUNT = "questions_count";
+    public static $CORRECT_COUNT = "correct_count";
+    public static $WRONG_COUNT = "wrong_count";
+    public static $EMPTY_COUNT = "empty_count";
+    public static $PERCENT = "percent";
+    public static $AVERAGE_PERCENT = "average_percent";
+    public static $MAX_PERCENT = "max_percent";
+    public static $LEVEL = "level";
+    public static $EMPTY = "empty";
+    public static $CORRECT = "correct";
+    public static $WRONG = "wrong";
+    public static $TOTAL = "total";
 }

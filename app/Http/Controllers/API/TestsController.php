@@ -2,6 +2,7 @@
 
 
 namespace App\Http\Controllers\API;
+
 use App\Includes\Constant;
 use App\Includes\Helper;
 use App\Models\CourseAccess;
@@ -15,9 +16,25 @@ use Illuminate\Http\Request;
 
 class TestsController extends BaseController
 {
-    public function getStudentTestList(Request $req){
+    public function getTestPdfFile($test_id)
+    {
+        $test = Test::find($test_id);
+        if (env('APP_ON_SERVER')) {
+            $file_path = env('SERVER_PUBLIC_PATH') . "/storage/" . $test->questions_file;
+        } else {
+            $file_path = public_path() . "/storage/" . $test->questions_file;
+        }
+
+        return \Response::make(file_get_contents($file_path), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $test->title . '"'
+        ]);
+    }
+
+    public function getStudentTestList(Request $req)
+    {
         $student = $this->check_token($req->input('token'));
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         // get inputs
@@ -36,10 +53,11 @@ class TestsController extends BaseController
         );
     }
 
-    public function getStudentAllTests($student){
+    public function getStudentAllTests($student)
+    {
         $tests = [];
-        foreach ($student->plans as $plan){
-            foreach ($plan->courses as $course){
+        foreach ($student->plans as $plan) {
+            foreach ($plan->courses as $course) {
                 $tests = array_merge($tests, $course->tests->toArray());
             }
         }
@@ -47,7 +65,8 @@ class TestsController extends BaseController
         return Helper::removeSimilarObjects($tests);
     }
 
-    private function filterTests($tests, $course_id = null, $date_from = null, $date_to = null){
+    private function filterTests($tests, $course_id = null, $date_from = null, $date_to = null)
+    {
         $result = [];
         $condition = true;
 
@@ -72,7 +91,7 @@ class TestsController extends BaseController
                     array_push($result, $test);
                 $condition = true;
             }
-        }else $result = $tests;
+        } else $result = $tests;
 
         return $result;
     }
@@ -86,27 +105,27 @@ class TestsController extends BaseController
             Constant::$TAKEN_TESTS => [],
         ];
 
-        foreach ($tests as $test){
+        foreach ($tests as $test) {
             $test = (object)$test;
-            if ($test->exam_holding_type == Constant::$SPECIAL_DATE_AND_TIME){
-                if($this->checkIfTestIsRunning($test))
+            if ($test->exam_holding_type == Constant::$SPECIAL_DATE_AND_TIME) {
+                if ($this->checkIfTestIsRunning($test))
                     array_push(
                         $categorized_tests[Constant::$RUNNING_TESTS],
                         $this->buildTestObject($test, $student_id)
                     );
 
-                if($this->checkIfTestIsRemaining($test))
+                if ($this->checkIfTestIsRemaining($test))
                     array_push(
                         $categorized_tests[Constant::$REMAINING_TESTS],
                         $this->buildTestObject($test, $student_id)
                     );
 
-                if($this->checkIfTestIsTaken($test))
+                if ($this->checkIfTestIsTaken($test))
                     array_push(
                         $categorized_tests[Constant::$TAKEN_TESTS],
                         $this->buildTestObject($test, $student_id)
                     );
-            } else{
+            } else {
                 array_push(
                     $categorized_tests[Constant::$FREE_TESTS],
                     $this->buildTestObject($test, $student_id)
@@ -122,7 +141,8 @@ class TestsController extends BaseController
         return $test->start_date > Carbon::now();
     }
 
-    private function checkIfTestIsTaken($test){
+    private function checkIfTestIsTaken($test)
+    {
         return $test->finish_date < Carbon::now();
     }
 
@@ -137,7 +157,8 @@ class TestsController extends BaseController
         return ($reached && $not_passed);
     }
 
-    private function getTestDuration($test){
+    private function getTestDuration($test)
+    {
         if ($test->exam_holding_type == Constant::$FREE_TESTS)
             return $test->exam_duration;
 
@@ -178,12 +199,12 @@ class TestsController extends BaseController
         $qa_access_date = null;
         $qa_access_time = null;
 
-        if ($test->result_access_type == Constant::$SPECIAL_DATE_AND_TIME){
+        if ($test->result_access_type == Constant::$SPECIAL_DATE_AND_TIME) {
             $result_access_date = "{$test->result_access_date_year}/{$test->result_access_date_month}/{$test->result_access_date_day}";
             $result_access_time = "{$test->result_access_date_hour}/{$test->result_access_date_min}";
         }
 
-        if ($test->qa_access_type == Constant::$SPECIAL_DATE_AND_TIME){
+        if ($test->qa_access_type == Constant::$SPECIAL_DATE_AND_TIME) {
             $qa_access_date = "{$test->qa_access_date_year}/{$test->qa_access_date_month}/{$test->qa_access_date_day}";
             $qa_access_time = "{$test->qa_access_date_hour}/{$test->qa_access_date_min}";
         }
@@ -210,9 +231,9 @@ class TestsController extends BaseController
             'test_access' => $this->getStudentTestAccess($test, $student_id) ? 1 : 0
         ];
 
-        if ($set_course_access){
+        if ($set_course_access) {
             $access = 0;
-            if ($student_id){
+            if ($student_id) {
                 $access = CourseAccess::where([
                     ['student_id', $student_id],
                     ['course_id', $test->course_id]
@@ -224,7 +245,8 @@ class TestsController extends BaseController
         return $object;
     }
 
-    public function getStudentTestStatus($student_id, $test_id){
+    public function getStudentTestStatus($student_id, $test_id)
+    {
         $taking = TakingTest::where([
             ['student_id', $student_id],
             ['test_id', $test_id],
@@ -244,7 +266,8 @@ class TestsController extends BaseController
             return Constant::$TEST_IS_TAKING;
     }
 
-    public function getTakingTestDuration($taking){
+    public function getTakingTestDuration($taking)
+    {
         $test = Test::find($taking->test_id);
         $duration = $this->getTestDuration($test);
         $finish_date = new Carbon($taking->enter_date);
@@ -256,9 +279,10 @@ class TestsController extends BaseController
             return $finish_date->diffInMinutes(Carbon::now());
     }
 
-    public function enterTest(Request $req){
+    public function enterTest(Request $req)
+    {
         $student = $this->check_token($req->input('token'));
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $test = Test::find($req->input('test_id'));
@@ -268,9 +292,9 @@ class TestsController extends BaseController
             ['test_id', $test->id],
         ])->first();
 
-        if ($taking){
+        if ($taking) {
             $duration = $this->getTakingTestDuration($taking);
-        }else{
+        } else {
             $duration = $this->getTestDuration($test);
             $taking = new TakingTest();
             $taking->student_id = $student->id;
@@ -285,6 +309,7 @@ class TestsController extends BaseController
         ])->first();
 
         $data = [
+            'current_time' => Carbon::now()->timestamp,
             'duration' => $duration,
             'questions' => $test->questions_file,
             'questions_count' => sizeof(json_decode($test->options)),
@@ -297,9 +322,10 @@ class TestsController extends BaseController
         );
     }
 
-    public function saveTestRecord(Request $req){
+    public function saveTestRecord(Request $req)
+    {
         $student = $this->check_token($req->input('token'));
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $test = Test::find($req->input('test_id'));
@@ -308,12 +334,26 @@ class TestsController extends BaseController
             ['student_id', $student->id],
             ['test_id', $test->id],
         ])->first();
+
+        if (!$record)
+            return $this->sendResponse(Constant::$NO_RECORD, null);
+
         $record->answers = $req->input('answers');
         $record->save();
+
+        $wc = new WorkbookController();
+        $wc->saveWorkbook($student, $test, $record->answers);
 
         return $this->sendResponse(
             Constant::$SUCCESS,
             null
+        );
+    }
+
+    public function getCurrentTime(){
+        return $this->sendResponse(
+            Constant::$SUCCESS,
+            Carbon::now()->timestamp
         );
     }
 }

@@ -103,4 +103,8 @@ class Helper
         return str_replace($english, $persian, $string);
     }
 
+    public static function truncate($i) {
+        return floor($i*100) / 100.0;
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\API\PlansController;
 use App\Imports\PlanStudentsImport;
 use App\Exports\StudentsExport;
 use App\Includes\Constant;
@@ -422,17 +423,19 @@ class PlanCrudController extends CrudController
             abort(500);
         }
 
+        // getting old courses and new courses
+        $old_courses = json_decode($request->input('extra'))->old_courses;
+        $old_courses_ids = array_map(function ($course) {
+            return $course->id;
+        }, $old_courses);
+        sort($old_courses_ids);
+
+        $new_courses_ids = $request->input('courses');
+        sort($new_courses_ids);
+
+
         if ($request->input('change_course_limit')) {
             if (Plan::find($request->input('id'))->students->count() > 0) {
-                $old_courses = json_decode($request->input('extra'))->old_courses;
-                $old_courses_ids = array_map(function ($course) {
-                    return $course->id;
-                }, $old_courses);
-                sort($old_courses_ids);
-
-                $new_courses_ids = $request->input('courses');
-                sort($new_courses_ids);
-
                 if ($old_courses_ids != $new_courses_ids)
                     return back()->withErrors(['custom_fail' => true, 'errors' => ".دانش آموزانی در این طرح ثبت نام نموده اند. امکان تغییر کلاس های آن را ندارید"]);
             }
@@ -452,6 +455,14 @@ class PlanCrudController extends CrudController
         $redirect_location = parent::updateCrud($request);
         // your additional operations after save here
         // use $this->data['entry'] or $this->crud->entry
+        if (!$request->input('change_course_limit')) {
+            $students = Plan::find($request->input('id'))->students;
+            if ($students->count() > 0 && $old_courses_ids != $new_courses_ids){
+                $pc = new PlansController();
+                foreach ($students as $student)
+                    $pc->registerInPlan($student, $this->data['entry']);
+            }
+        }
         return $redirect_location;
     }
 

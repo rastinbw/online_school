@@ -51,12 +51,14 @@ class CourseTestCrudController extends TestCrudController
 
         $this->data['extra'] = json_encode(
             [
-              'old_start_date' => $test->start_date,
-              'old_finish_date' => $test->finish_date,
-              'old_duration' => $test->exam_duration,
-              'old_type' => $test->exam_holding_type,
-              'reached_start_date_time' => $test->start_date <= Carbon::now(),
-              'reached_finish_date_time' => $test->finish_date <= Carbon::now(),
+                'old_start_date' => $test->start_date,
+                'old_finish_date' => $test->finish_date,
+                'old_duration' => $test->exam_duration,
+                'old_type' => $test->exam_holding_type,
+                'old_factors' => $test->factors,
+                'old_options' => $test->options,
+                'reached_start_date_time' => $test->start_date <= Carbon::now(),
+                'reached_finish_date_time' => $test->finish_date <= Carbon::now(),
             ]
         );
 
@@ -99,7 +101,7 @@ class CourseTestCrudController extends TestCrudController
         $finish_date = new Carbon("{$gDateFinish[0]}-{$gDateFinish[1]}-{$gDateFinish[2]} {$request->input('exam_date_finish_hour')}:{$request->input('exam_date_finish_min')}");
 
         // check for tests and sessions overlapping
-        if($request->input('exam_holding_type') == Constant::$SPECIAL_DATE_AND_TIME){
+        if ($request->input('exam_holding_type') == Constant::$SPECIAL_DATE_AND_TIME) {
             $errors = AdminController::checkOverlappedTestsAndSessions(
                 $start_date,
                 $finish_date,
@@ -109,6 +111,13 @@ class CourseTestCrudController extends TestCrudController
             if (sizeof($errors) > 0)
                 return back()->withErrors(['custom_fail' => true, 'errors' => $errors]);
         }
+
+        // check factors and options coverage
+        $options = json_decode($request->input('options'));
+        $factors = json_decode($request->input('factors'));
+
+        if (!$this->checkCoverage($factors, $options))
+            return back()->withErrors(['custom_fail' => true, 'errors' => '.گزینه های آزمون با درس های آزمون همخوانی ندارد']);
 
         $redirect_location = parent::storeCrud();
 
@@ -169,6 +178,8 @@ class CourseTestCrudController extends TestCrudController
         $old_finish_date = json_decode($request->input('extra'))->old_finish_date;
         $old_duration = json_decode($request->input('extra'))->old_duration;
         $old_type = json_decode($request->input('extra'))->old_type;
+        $old_options = json_decode($request->input('extra'))->old_options;
+        $old_factors = json_decode($request->input('extra'))->old_factors;
         $reached_start_date_time = json_decode($request->input('extra'))->reached_start_date_time;
         $reached_finish_date_time = json_decode($request->input('extra'))->reached_finish_date_time;
 
@@ -178,18 +189,24 @@ class CourseTestCrudController extends TestCrudController
         if ($old_type == Constant::$FREE_TESTS && $reached_start_date_time && $old_duration != $request->input('exam_duration'))
             return back()->withErrors(['custom_fail' => true, 'errors' => '.این آزمون شناور قبلا شروع شده است. قادر به تغییر مدت زمان آن نیستید']);
 
-        if ($reached_start_date_time && ($old_start_date != $start_date || $old_finish_date != $finish_date)){
+        if ($reached_start_date_time && ($old_start_date != $start_date || $old_finish_date != $finish_date)) {
             // check if we are updating a not finished free test finish date
-            if ($old_type == Constant::$FREE_TESTS && !$reached_finish_date_time){
+            if ($old_type == Constant::$FREE_TESTS && !$reached_finish_date_time) {
                 if ($old_start_date != $start_date)
                     return back()->withErrors(['custom_fail' => true, 'errors' => '.این آزمون شناور قبلا شروع شده است. تنها قادر به تغییر زمان پایان آن هستید']);
-            }else{
+            } else {
                 return back()->withErrors(['custom_fail' => true, 'errors' => '.این آزمون برگزار شده است و قادر به تغییر زمان شروع و پایان آن نیستید']);
             }
         }
 
+        if ($reached_start_date_time && $old_options != $request->input('options'))
+            return back()->withErrors(['custom_fail' => true, 'errors' => '.این آزمون شروع شده است. قادر به تغییر گزینه های آزمون نیستید']);
+
+        if ($reached_start_date_time && $old_factors != $request->input('factors'))
+            return back()->withErrors(['custom_fail' => true, 'errors' => '.این آزمون شروع شده است. قادر به تغییر درس های آزمون نیستید']);
+
         // check for tests overlapping
-        if($request->input('exam_holding_type') == Constant::$SPECIAL_DATE_AND_TIME){
+        if ($request->input('exam_holding_type') == Constant::$SPECIAL_DATE_AND_TIME) {
             $errors = AdminController::checkOverlappedTestsAndSessions(
                 $start_date,
                 $finish_date,
@@ -200,6 +217,13 @@ class CourseTestCrudController extends TestCrudController
             if (sizeof($errors) > 0)
                 return back()->withErrors(['custom_fail' => true, 'errors' => $errors]);
         }
+
+        // check factors and options coverage
+        $options = json_decode($request->input('options'));
+        $factors = json_decode($request->input('factors'));
+
+        if (!$this->checkCoverage($factors, $options))
+            return back()->withErrors(['custom_fail' => true, 'errors' => '.گزینه های آزمون با درس های آزمون همخوانی ندارد']);
 
         $redirect_location = parent::updateCrud();
 
@@ -333,6 +357,36 @@ class CourseTestCrudController extends TestCrudController
                 }
             }
         }
+    }
+
+    /**
+     * @param $factors
+     * @param $options
+     * @return bool
+     */
+    private function checkCoverage($factors, $options): bool
+    {
+        if ($factors != null) {
+            $questions_from_options = [];
+            $questions_from_factors = [];
+
+            foreach ($factors as $factor) {
+                for ($i = (int)$factor->q_number_from; $i <= (int)$factor->q_number_to; $i++)
+                    array_push($questions_from_factors, $i);
+            }
+
+            foreach ($options as $option) {
+                array_push($questions_from_options, (int)$option->q_number);
+            }
+
+            sort($questions_from_options);
+            sort($questions_from_factors);
+
+            if ($questions_from_factors != $questions_from_options)
+                return false;
+        }
+
+        return true;
     }
 
 

@@ -522,7 +522,7 @@ class TestCrudController extends CrudController
             ],
             [
                 'name' => 'factors',
-                'label' => 'ضریب سوالات (درصورت مشخص نکردن ضریب مقدار یک برای هر سوال در نظر گرفته میشود)',
+                'label' => 'درس های آزمون (این فیلد اختیاری است ولی درصورت مشخص کردن درس باید تمام گزینه های آزمون را پوشش دهد)',
                 'type' => 'child',
                 'entity_singular' => 'اضافه',
                 'tab' => $third_tab,
@@ -631,5 +631,4 @@ class TestCrudController extends CrudController
         // use $this->data['entry'] or $this->crud->entry
         return $redirect_location;
     }
-
 }

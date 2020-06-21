@@ -174,22 +174,22 @@
                         $scope.items.push(item);
                     }
 
-                    if($scope.items.length >= 2){
-                        $prev = $scope.items[$scope.items.length-2];
-                        $prev['cross'] = $prev['price']* $prev['count'];
-
-                        // if($scope.items[$scope.items.length-2]['count'] != undefined){
-                        //     if($scope.items[$scope.items.length-2]['cross'] != null){
-                        //         $("#total").text((Number($('#total').text())+$scope.items[$scope.items.length-2]['cross']));
-                        //         $("#total").text(addCommas($("#total").text()));
-                        //     }
-                        // }else {
-                        //     if($scope.items[$scope.items.length-2]['price'] != null) {
-                        //         $("#total").text(Number($('#total').text())+Number($scope.items[$scope.items.length-2]['price']));
-                        //         $("#total").text(addCommas($("#total").text()));
-                        //     }
-                        // }
-                    }
+                    // if($scope.items.length >= 2){
+                    //     $prev = $scope.items[$scope.items.length-2];
+                    //     $prev['cross'] = $prev['price']* $prev['count'];
+                    //
+                    //     // if($scope.items[$scope.items.length-2]['count'] != undefined){
+                    //     //     if($scope.items[$scope.items.length-2]['cross'] != null){
+                    //     //         $("#total").text((Number($('#total').text())+$scope.items[$scope.items.length-2]['cross']));
+                    //     //         $("#total").text(addCommas($("#total").text()));
+                    //     //     }
+                    //     // }else {
+                    //     //     if($scope.items[$scope.items.length-2]['price'] != null) {
+                    //     //         $("#total").text(Number($('#total').text())+Number($scope.items[$scope.items.length-2]['price']));
+                    //     //         $("#total").text(addCommas($("#total").text()));
+                    //     //     }
+                    //     // }
+                    // }
 
 
                 }

@@ -28,6 +28,7 @@ Route::group([
     CRUD::resource('discountCode', 'DiscountCodeCrudController');
     CRUD::resource('help', 'HelpCrudController');
     CRUD::resource('sliderPlan', 'SliderPlanCrudController');
+    CRUD::resource('smsTemplate', 'SmsTemplateCrudController');
 
 
     // Course Crud Routes

@@ -22,54 +22,54 @@ class TransactionController extends BaseController
 {
     public function payForPlan($token, $plan_id, $payment_type, $installment_type_id, $discount_code)
     {
-//        $student = $this->check_token($token);
-//        if (!$student)
-//            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
-//
-//        $installment_type_id = ($installment_type_id != 'null') ? $installment_type_id : null;
-//        $discount_code = ($discount_code != 'null') ? $discount_code : null;
-//
-//        $plan = Plan::find($plan_id);
-//        $region_price = $plan->region_price($student->region);
-//        $installment_type = InstallmentType::find($installment_type_id);
-//        $price = $this->getPrice($region_price, $plan->discount, $discount_code, $installment_type);
-//
-//        if ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
-//            $amount = $this->calculateInstallments($price, $installment_type)[0];
-//        else
-//            $amount = $price;
-//
-//        // creating transaction
-//        $time = Verta::now();
-//        $transaction = new Transaction();
-//        $transaction->order_no = $this->getOrderNo();
-//        $transaction->title = ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
-//            ? $plan->title . " (پیش پرداخت)"
-//            : $plan->title;
-//        $transaction->paid_amount = $amount;
-//        $transaction->plan_id = $plan->id;
-//        $transaction->date_year = $time->year;
-//        $transaction->date_month = $time->month;
-//        $transaction->date_day = $time->day;
-//        $transaction->transaction_payment_type = $payment_type;
-//        $transaction->installment_type_id = ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
-//            ? $installment_type_id : null;
-//        $transaction->student_id = $student->id;
-//        $transaction->discount_code = $discount_code;
-//
-//        $results = Zarinpal::request(
-//            env('APP_URL') . '/api/plan/pay/done',
-//            $amount,
-//            $transaction->title,
-//            $student->email,
-//            $student->phone_number
-//        );
-//
-//        $transaction->authority = $results['Authority'];
-//        $transaction->save();
+        $student = $this->check_token($token);
+        if (!$student)
+            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
-        return Redirect::to("api/payment");
-        //return Zarinpal::redirect();
+        $installment_type_id = ($installment_type_id != 'null') ? $installment_type_id : null;
+        $discount_code = ($discount_code != 'null') ? $discount_code : null;
+
+        $plan = Plan::find($plan_id);
+        $region_price = $plan->region_price($student->region);
+        $installment_type = InstallmentType::find($installment_type_id);
+        $price = $this->getPrice($region_price, $plan->discount, $discount_code, $installment_type);
+
+        if ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
+            $amount = $this->calculateInstallments($price, $installment_type)[0];
+        else
+            $amount = $price;
+
+        // creating transaction
+        $time = Verta::now();
+        $transaction = new Transaction();
+        $transaction->order_no = $this->getOrderNo();
+        $transaction->title = ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
+            ? $plan->title . " (پیش پرداخت)"
+            : $plan->title;
+        $transaction->paid_amount = $amount;
+        $transaction->plan_id = $plan->id;
+        $transaction->date_year = $time->year;
+        $transaction->date_month = $time->month;
+        $transaction->date_day = $time->day;
+        $transaction->transaction_payment_type = $payment_type;
+        $transaction->installment_type_id = ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
+            ? $installment_type_id : null;
+        $transaction->student_id = $student->id;
+        $transaction->discount_code = $discount_code;
+        $transaction->save();
+
+        $results = Zarinpal::request(
+            env('APP_URL') . '/api/plan/pay/done',
+            $amount,
+            $transaction->title,
+            $student->email,
+            $student->phone_number
+        );
+
+        $transaction->authority = $results['Authority'];
+        $transaction->save();
+
+        return Zarinpal::redirect();
     }
 
     public function payForPlanIsDone(Request $req)
@@ -302,91 +302,6 @@ class TransactionController extends BaseController
 
         return $this->sendResponse(Constant::$SUCCESS, $result);
     }
-//    public function registerInPlan(Request $req)
-//    {
-//        $student = $this->check_token($req->input('token'));
-//        if (!$student)
-//            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
-//
-//        $plan = Plan::find($req->input('plan_id'));
-//        $payment_type = $req->input('payment_type');
-//        $transaction = $this->generateTransaction($req, $payment_type, $student->id);
-//
-//        if ($transaction->success) {
-//            if ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT) {
-//                $installment_type = InstallmentType::find($req->input('installment_type_id'));
-//
-//                $amounts = $this->calculateInstallments(
-//                    $plan->region_price($student->region),
-//                    $plan->discount,
-//                    $installment_type
-//                );
-//
-//                $counter = 0;
-//                $date = Verta::now();
-//                foreach ($amounts as $amount) {
-//                    $installment = new Installment();
-//                    $installment->student_id = $student->id;
-//                    $installment->plan_id = $req->input('plan_id');
-//                    $installment->installment_type_id = $req->input('installment_type_id');
-//                    $installment->transaction_id = ($counter == 0) ? $transaction->id : null;
-//                    $installment->amount = $amount;
-//
-//                    $installment->date_year = $date->year;
-//                    $installment->date_month = $date->month;
-//                    $installment->date_day = $date->day;
-//
-//                    $gDate = Verta::getGregorian($date->year, $date->month, $date->day);
-//                    $installment->date = new Carbon("{$gDate[0]}-{$gDate[1]}-{$gDate[2]}");
-//
-//                    $date->addDays($installment_type->span);
-//                    $installment->save();
-//
-//                    $counter++;
-//                }
-//
-//            }
-//
-//            $plan->students()->attach([$student->id]);
-//
-//            // generate accesses
-//            $access_list = AccessController::createStudentPlanCourseAccesses($plan->id, $student->id, 1);
-//            AccessController::createStudentPlanTestAccesses($plan->id, $student->id, 1);
-//            CourseTestCrudController::generateStudentPlanTestRecords($plan->id, $student->id);
-//            SkyRoomController::addStudentToRooms($access_list, $student->sky_room_id);
-//        }
-//
-//        return $this->sendResponse(Constant::$SUCCESS, $transaction);
-//    }
-//
-//    /**
-//     * @param Request $req (plan_id, payment_success, issue_tracking_no, paid_amount)
-//     * @param $type
-//     * @param $student_id
-//     * @return Transaction
-//     */
-//    public function generateTransaction(Request $req, $type, $student_id): Transaction
-//    {
-//        $plan = Plan::find($req->input('plan_id'));
-//        $time = Verta::now();
-//
-//        $transaction = new Transaction();
-//        $transaction->issue_tracking_no = $req->input('success') ?
-//            $req->input('issue_tracking_no')
-//            : null;
-//        $transaction->order_no = $this->getOrderNo();
-//        $transaction->title = $plan->title;
-//        $transaction->success = $req->input('success');
-//        $transaction->paid_amount = $req->input('paid_amount');
-//        $transaction->plan_id = $plan->id;
-//        $transaction->date_year = $time->year;
-//        $transaction->date_month = $time->month;
-//        $transaction->date_day = $time->day;
-//        $transaction->transaction_payment_type = $type;
-//        $transaction->student_id = $student_id;
-//        $transaction->save();
-//        return $transaction;
-//    }
 
     /**
      * @param $region_price

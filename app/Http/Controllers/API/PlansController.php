@@ -12,6 +12,8 @@ use App\Models\CourseAccess;
 use App\Models\Plan;
 use App\Models\Session;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Redirect;
 
 class PlansController extends BaseController
 {
@@ -29,7 +31,8 @@ class PlansController extends BaseController
     }
 
     public function registerInPlan($student, $plan){
-        $plan->students()->attach([$student->id]);
+        if (!$plan->students->contains($student->id))
+            $plan->students()->attach([$student->id]);
 
         // generate accesses
         $access_list = AccessController::createStudentPlanCourseAccesses($plan->id, $student->id, 1);
@@ -190,16 +193,16 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$VIDEO_UNAVAILABLE, null);
     }
 
-    public function getSessionVideoDownloadLink(Request $req, $is_public){
-        $student = $this->check_token($req->input('token'));
+    public function getSessionVideoDownloadLink($token, $plan_id, $session_id){
+        $student = $this->check_token($token);
         if(!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
-        $plan = Plan::find($req->input('plan_id'));
+        $plan = Plan::find($plan_id);
         if($plan == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
-        $session = Session::find($req->input('session_id'));
+        $session = Session::find($session_id);
         if($session == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
@@ -212,8 +215,15 @@ class PlansController extends BaseController
 
         $has_registered = ($access) ? 1 : 0;
 
-        if($this->getSessionAccess($course, $session, $access, $has_registered) && $session->video_download_link)
-            return $this->sendResponse(Constant::$SUCCESS, $session->video_download_link);
+        if($this->getSessionAccess($course, $session, $access, $has_registered) && $session->video_download_link){
+            $headers = array(
+                'Content-Type' => 'application/apk',
+                'Content-Disposition: attachment; filename=' . $session->title,
+            );
+
+            return Redirect::to($session->video_download_link)->withHeaders($headers);
+        }
+        //return $this->sendResponse(Constant::$SUCCESS, $session->video_download_link);
 
         return $this->sendResponse(Constant::$DOWNLOAD_UNAVAILABLE, null);
     }
