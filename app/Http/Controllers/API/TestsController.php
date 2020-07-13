@@ -108,6 +108,8 @@ class TestsController extends BaseController
         foreach ($tests as $test) {
             $test = (object)$test;
             if ($test->exam_holding_type == Constant::$SPECIAL_DATE_AND_TIME) {
+                $has_access = $this->getStudentTestAccess($test, $student_id);
+
                 if ($this->checkIfTestIsRunning($test))
                     array_push(
                         $categorized_tests[Constant::$RUNNING_TESTS],
@@ -120,11 +122,18 @@ class TestsController extends BaseController
                         $this->buildTestObject($test, $student_id)
                     );
 
-                if ($this->checkIfTestIsTaken($test))
-                    array_push(
-                        $categorized_tests[Constant::$TAKEN_TESTS],
-                        $this->buildTestObject($test, $student_id)
-                    );
+                if ($this->checkIfTestIsTaken($test)){
+                    if (!$has_access)
+                        array_push(
+                            $categorized_tests[Constant::$TAKEN_TESTS],
+                            $this->buildTestObject($test, $student_id)
+                        );
+                    else
+                        array_push(
+                            $categorized_tests[Constant::$RUNNING_TESTS],
+                            $this->buildTestObject($test, $student_id)
+                        );
+                }
             } else {
                 array_push(
                     $categorized_tests[Constant::$FREE_TESTS],

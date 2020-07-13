@@ -14,6 +14,9 @@ use App\Models\Plan;
 use App\Models\SkyRoomError;
 use App\Models\Tag;
 use App\Models\Teacher;
+use App\Models\Test;
+use App\Models\TestAccess;
+use App\Models\TestRecord;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
@@ -303,14 +306,6 @@ class CourseCrudController extends CrudController
                 'label' => 'عنوان',
             ],
             [
-                'label' => "استاد", // Table column heading
-                'type' => "select",
-                'name' => 'teacher_id', // the column that contains the ID of that connected entity;
-                'entity' => 'teacher', // the method that defines the relationship in your Model
-                'attribute' => "list_title", // foreign key attribute that is shown to user
-                'model' => "App\Models\Teacher", // foreign key model
-            ],
-            [
                 'name' => 'status',
                 'label' => 'وضعیت',
                 'type' => 'select_from_array',
@@ -466,6 +461,16 @@ class CourseCrudController extends CrudController
 
         $api = new Skyroom(env('SKY_ROOM_API_URL'));
         $api->call('deleteRoom', array("room_id" => Course::find($id)->room_id));
+
+        $course = Course::find($id);
+        foreach ($course->tests as $test){
+            TestRecord::where('test_id', $test->id)->delete();
+            TestAccess::where('test_id', $test->id)->delete();
+        }
+        $course->tests->each->delete();
+
+        $course->sessions->each->delete();
+        $course->courseAccesses->each->delete();
 
         return $this->crud->delete($id);
     }

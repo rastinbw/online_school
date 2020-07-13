@@ -83,7 +83,7 @@ Route::post('/api/student/coursesbyday', 'API\PlansController@getStudentCoursesB
 Route::post('/api/plan/courses/{is_public}', 'API\PlansController@getPlanCourses');
 Route::post('/api/session/videolink', 'API\PlansController@getSessionVideoLink');
 Route::get('/api/session/videolink/download/{token}/{plan_id}/{session_id}', 'API\PlansController@getSessionVideoDownloadLink');
-Route::get('/api/course/online', 'API\PlansController@getCurrentOnlineCourse');
+Route::post('/api/course/online', 'API\PlansController@getCurrentOnlineCourse');
 Route::post('/api/plan/free/register', 'API\PlansController@registerInFreePlan');
 Route::post('/api/plan/registered', 'API\PlansController@hasRegisteredToPlan');
 Route::get('/api/plan/{plan_id}/info', 'API\PlansController@getPlanInfo');

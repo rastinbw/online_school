@@ -137,6 +137,11 @@ class Plan extends Model
     {
         return $this->belongsTo('App\Models\Category');
     }
+
+    public function messages()
+    {
+        return $this->hasMany('App\Models\Message');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

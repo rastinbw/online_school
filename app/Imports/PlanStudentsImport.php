@@ -1,7 +1,11 @@
 <?php
 namespace App\Imports;
 
+use App\Http\Controllers\API\PlansController;
+use App\Includes\Helper;
 use App\Models\NationalCodePlanPair;
+use App\Models\Plan;
+use App\Models\Student;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
 class PlanStudentsImport  implements ToCollection
@@ -16,14 +20,21 @@ class PlanStudentsImport  implements ToCollection
     {
         foreach ($rows as $row)
         {
-            if(!NationalCodePlanPair::where([
-                ['national_code', $row[0]],
-                ['plan_id', $this->plan_id]]
-            )->exists()){
-                NationalCodePlanPair::create([
-                    'plan_id' => $this->plan_id,
-                    'national_code' => $row[0],
-                ]);
+            //$national_code = Helper::convertPersianToEnglish($row[0]);
+            $student = Student::where('national_code', $row[0])->first();
+            if ($student){
+                $pc = new PlansController();
+                $pc->registerInPlan($student, Plan::find($this->plan_id));
+            }else{
+                if(!NationalCodePlanPair::where([
+                        ['national_code', $row[0]],
+                        ['plan_id', $this->plan_id]]
+                )->exists()){
+                    NationalCodePlanPair::create([
+                        'plan_id' => $this->plan_id,
+                        'national_code' => $row[0],
+                    ]);
+                }
             }
         }
     }

@@ -34,6 +34,7 @@
         $last_section = $url[sizeof($url) - 1];
         $is_prev_courses = $last_section === 'session' || $last_section === 'test';
         $is_prev_students = $last_section === 'courseaccess' || $last_section === 'testaccess';
+        $is_prev_plans = $last_section === 'message';
     ?>
 
     @if($is_prev_courses)
@@ -43,6 +44,10 @@
     @elseif($is_prev_students)
         <a style="float:right" href="{{ url(URL::to('/admin/student')) }}">
             {{ trans('backpack::crud.back_to_all') }} دانش آموزان &nbsp<i class="fa fa-angle-double-right"></i>
+        </a><br><br>
+    @elseif($is_prev_plans)
+        <a style="float:right" href="{{ url(URL::to('/admin/plan')) }}">
+            {{ trans('backpack::crud.back_to_all') }} طرح ها &nbsp<i class="fa fa-angle-double-right"></i>
         </a><br><br>
     @endif
 

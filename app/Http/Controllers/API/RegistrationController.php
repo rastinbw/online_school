@@ -118,7 +118,7 @@ class RegistrationController extends BaseController
         SkyRoomController::createUserStudent($student);
 
         // Add student to plans
-        $pairs = NationalCodePlanPair::where('national_code', $student->national_code)->get();
+        $pairs = NationalCodePlanPair::where('national_code', $national_code)->get();
         $access_list = [];
         foreach ($pairs as $pair) {
             $plan = Plan::find($pair->plan_id);

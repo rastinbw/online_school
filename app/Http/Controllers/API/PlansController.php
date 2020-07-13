@@ -12,14 +12,13 @@ use App\Models\CourseAccess;
 use App\Models\Plan;
 use App\Models\Session;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Redirect;
 
 class PlansController extends BaseController
 {
-    public function registerInFreePlan(Request $req){
+    public function registerInFreePlan(Request $req)
+    {
         $student = $this->check_token($req->input('token'));
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $plan = Plan::find($req->input('plan_id'));
@@ -30,7 +29,8 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, null);
     }
 
-    public function registerInPlan($student, $plan){
+    public function registerInPlan($student, $plan)
+    {
         if (!$plan->students->contains($student->id))
             $plan->students()->attach([$student->id]);
 
@@ -39,9 +39,11 @@ class PlansController extends BaseController
         AccessController::createStudentPlanTestAccesses($plan->id, $student->id, 1);
         CourseTestCrudController::generateStudentPlanTestRecords($plan->id, $student->id);
         SkyRoomController::addStudentToRooms($access_list, $student->sky_room_id);
+
     }
 
-    public function getPlanList($category_id, $tag_id, $grade_id, $field_id){
+    public function getPlanList($category_id, $tag_id, $grade_id, $field_id)
+    {
         // get courses with appropriate filters
         $query = [];
         $orQuery = [];
@@ -58,7 +60,7 @@ class PlansController extends BaseController
 
         array_push($query, ['category_id', '=', $category_id]);
 
-        $plans = Plan::where($query)->orWhere($orQuery)->get()->map(function ($plan){
+        $plans = Plan::where($query)->orWhere($orQuery)->get()->map(function ($plan) {
             return $this->buildPlanObject($plan);
         })->toArray();
 
@@ -70,25 +72,27 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, $plans);
     }
 
-    public function getStudentPlanList(Request $req){
+    public function getStudentPlanList(Request $req)
+    {
         $student = $this->check_token($req->input('token'));
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
-        $plans = $student->plans()->get()->map(function ($plan){
+        $plans = $student->plans()->get()->map(function ($plan) {
             return $this->buildPlanObject($plan);
         })->toArray();
 
         return $this->sendResponse(Constant::$SUCCESS, $plans);
     }
 
-    public function hasRegisteredToPlan(Request $req){
+    public function hasRegisteredToPlan(Request $req)
+    {
         $student = $this->check_token($req->input('token'));
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $plan = Plan::find($req->input('plan_id'));
-        if($plan == null)
+        if ($plan == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
         $has_registered = ($plan->students->contains($student->id)) ? true : false;
@@ -96,23 +100,24 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, $has_registered);
     }
 
-    public function getStudentCoursesByDay(Request $req){
+    public function getStudentCoursesByDay(Request $req)
+    {
         $student = $this->check_token($req->input('token'));
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $courses = [];
         $all_courses = [];
-        foreach($student->plans as $plan)
+        foreach ($student->plans as $plan)
             $all_courses = array_merge($all_courses, $plan->courses->toArray());
 
         // removing finished courses
-        foreach ($all_courses as $course){
+        foreach ($all_courses as $course) {
             if ($course['course_done'] != 1)
                 array_push($courses, $course);
         }
 
-        $courses = array_map(function ($course){
+        $courses = array_map(function ($course) {
             unset($course['pivot']);
             return $course;
         }, $courses);
@@ -121,7 +126,7 @@ class PlansController extends BaseController
         foreach (Constant::$DAYS as $DAY)
             $days[$DAY] = [];
 
-        foreach(Helper::removeSimilarObjects($courses) as $course){
+        foreach (Helper::removeSimilarObjects($courses) as $course) {
             array_push(
                 $days[$course['online_day']],
                 [
@@ -136,9 +141,10 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, $days);
     }
 
-    public function getPlanInfo($plan_id){
+    public function getPlanInfo($plan_id)
+    {
         $plan = Plan::find($plan_id);
-        if($plan == null)
+        if ($plan == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
         $data = $this->buildPlanObjectWithCourses($plan);
@@ -146,36 +152,38 @@ class PlansController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, $data);
     }
 
-    public function getPlanCourses(Request $req, $is_public){
+    public function getPlanCourses(Request $req, $is_public)
+    {
         $student = null;
-        if (!$is_public){
+        if (!$is_public) {
             $student = $this->check_token($req->input('token'));
-            if(!$student)
+            if (!$student)
                 return $this->sendResponse(Constant::$INVALID_TOKEN, null);
         }
 
         $plan = Plan::find($req->input('plan_id'));
-        if($plan == null)
+        if ($plan == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
-        $courses = $plan->courses->map(function($course) use ($plan, $student){
+        $courses = $plan->courses->map(function ($course) use ($plan, $student) {
             return $this->buildCourseObject($plan, $course, $student);
         });
 
         return $this->sendResponse(Constant::$SUCCESS, $courses);
     }
 
-    public function getSessionVideoLink(Request $req){
+    public function getSessionVideoLink(Request $req)
+    {
         $student = $this->check_token($req->input('token'));
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $plan = Plan::find($req->input('plan_id'));
-        if($plan == null)
+        if ($plan == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
         $session = Session::find($req->input('session_id'));
-        if($session == null)
+        if ($session == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
         $course = Course::find($session->course_id);
@@ -187,23 +195,24 @@ class PlansController extends BaseController
 
         $has_registered = ($access) ? 1 : 0;
 
-        if($this->getSessionAccess($course, $session, $access, $has_registered) && $session->video_link)
+        if ($this->getSessionAccess($course, $session, $access, $has_registered) && $session->video_link)
             return $this->sendResponse(Constant::$SUCCESS, $session->video_link);
 
         return $this->sendResponse(Constant::$VIDEO_UNAVAILABLE, null);
     }
 
-    public function getSessionVideoDownloadLink($token, $plan_id, $session_id){
+    public function getSessionVideoDownloadLink($token, $plan_id, $session_id)
+    {
         $student = $this->check_token($token);
-        if(!$student)
+        if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $plan = Plan::find($plan_id);
-        if($plan == null)
+        if ($plan == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
         $session = Session::find($session_id);
-        if($session == null)
+        if ($session == null)
             return $this->sendResponse(Constant::$INVALID_ID, null);
 
         $course = Course::find($session->course_id);
@@ -215,40 +224,72 @@ class PlansController extends BaseController
 
         $has_registered = ($access) ? 1 : 0;
 
-        if($this->getSessionAccess($course, $session, $access, $has_registered) && $session->video_download_link){
-            $headers = array(
-                'Content-Type' => 'application/apk',
-                'Content-Disposition: attachment; filename=' . $session->title,
-            );
-
-            return Redirect::to($session->video_download_link)->withHeaders($headers);
+        if ($this->getSessionAccess($course, $session, $access, $has_registered) && $session->video_download_link) {
+            ini_set('memory_limit', '5000M');
+            return response(file_get_contents($session->video_download_link), 200, [
+                'Content-Type' => 'application/mp4',
+                'Content-Disposition' => 'attachment; filename=' . $session->title . '.mp4',
+            ]);
+//            return response()->streamDownload(function () use ($session) {
+//                echo file_get_contents($session->video_download_link);
+//            }, $session->title . '.mp4');
         }
-        //return $this->sendResponse(Constant::$SUCCESS, $session->video_download_link);
+
 
         return $this->sendResponse(Constant::$DOWNLOAD_UNAVAILABLE, null);
     }
 
-    public function getCurrentOnlineCourse()
+    public function getCurrentOnlineCourse(Request $req)
     {
-        $session = Session::where('is_online', 1)->first();
-        $data = null;
+        $student = $this->check_token($req->input('token'));
+        if (!$student)
+            return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
-        if ($session){
-            $data = [
-                'course_title' => $session->course->title,
-                'session_title' => $session->title,
-                'teacher_name' => $session->course->teacher->name,
-                'teacher_avatar' => $session->course->teacher->avatar,
-                'room_url' => $session->course->room_url,
-            ];
+        $sessions = [];
+        foreach ($student->plans()->get() as $plan) {
+            foreach ($plan->courses()->get() as $course) {
+                foreach ($course->sessions()->get() as $s) {
+                    if ($s->is_online == 1) {
+                        array_push($sessions, $s);
+                    }
+                }
+            }
+        }
+
+        $free_sessions = Session::where([
+            ['is_free', 1],
+            ['is_online', 1]
+        ])->get();
+
+        foreach ($free_sessions as $s)
+            array_push($sessions, $s);
+
+        $sessions = Helper::removeSimilarObjects($sessions);
+
+        $data = null;
+        if (sizeof($sessions) > 0) {
+            $data = array_map(function ($session) {
+                return [
+                    'course_title' => Course::find($session['course_id'])->title,
+                    'session_title' => $session['title'],
+                    'teacher_name' => Course::find($session['course_id'])->teacher->name,
+                    'teacher_avatar' => Course::find($session['course_id'])->avatar,
+                    'room_url' => Course::find($session['course_id'])->room_url,
+                    'start_hour' => $session['start_hour'],
+                    'start_min' => $session['start_min'],
+                    'finish_hour' => $session['finish_hour'],
+                    'finish_min' => $session['finish_min']
+                ];
+            }, $sessions);
         }
 
         return $this->sendResponse(Constant::$SUCCESS, $data);
     }
 
-    private function buildCourseObject($plan, $course, $student){
+    private function buildCourseObject($plan, $course, $student)
+    {
         $access = null;
-        if ($student){
+        if ($student) {
             $access = CourseAccess::where([
                 ['student_id', $student->id],
                 ['course_id', $course->id],
@@ -282,22 +323,23 @@ class PlansController extends BaseController
             "access_denied" => ($access != null) ? ($access->has_access ? 0 : 1) : 0,
             "deny_access_reason" => ($access != null) ? $access->access_deny_reason : 0,
             "description" => $course->description,
-            "teacher" => $course->teacher()->get()->map(function($teacher){
+            "teacher" => $course->teacher()->get()->map(function ($teacher) {
                 return $this->buildTeacherObject($teacher);
             })[0],
-            "tag" => $course->tag()->get()->map(function($tag){
+            "tag" => $course->tag()->get()->map(function ($tag) {
                 return $this->buildTagObject($tag);
             })[0],
-            "sessions" => $course->sessions->map(function ($session) use ($access, $course, $has_registered){
+            "sessions" => $course->sessions->map(function ($session) use ($access, $course, $has_registered) {
                 return $this->buildSessionObject($course, $session, $access, $has_registered);
             }),
-            "tests" => $course->tests->map(function ($test) use ($student){
+            "tests" => $course->tests->map(function ($test) use ($student) {
                 return $this->buildTestObject($test, $student);
             })
         ];
     }
 
-    private function buildSimpleCourseObject($course){
+    private function buildSimpleCourseObject($course)
+    {
         return [
             "id" => $course->id,
             "title" => $course->title,
@@ -314,16 +356,17 @@ class PlansController extends BaseController
             "is_online" => $course->is_online,
             "is_free" => $course->is_free,
             "description" => $course->description,
-            "teacher" => $course->teacher()->get()->map(function($teacher){
+            "teacher" => $course->teacher()->get()->map(function ($teacher) {
                 return $this->buildTeacherObject($teacher);
             })[0],
-            "tag" => $course->tag()->get()->map(function($tag){
+            "tag" => $course->tag()->get()->map(function ($tag) {
                 return $this->buildTagObject($tag);
             })[0],
         ];
     }
 
-    private function buildSessionObject($course, $session, $course_access, $has_registered){
+    private function buildSessionObject($course, $session, $course_access, $has_registered)
+    {
         return [
             "id" => $session->id,
             "title" => $session->title,
@@ -344,7 +387,8 @@ class PlansController extends BaseController
         ];
     }
 
-    private function buildTagObject($tag){
+    private function buildTagObject($tag)
+    {
         return [
             "id" => $tag->id,
             "title" => $tag->title,
@@ -366,7 +410,8 @@ class PlansController extends BaseController
         ];
     }
 
-    private function buildPlanObject($plan){
+    private function buildPlanObject($plan)
+    {
         $grade = ($plan->grade) ? $plan->grade->title : "همه پایه ها";
         $field = ($plan->field) ? $plan->field->title : "همه رشته ها";
 
@@ -381,7 +426,7 @@ class PlansController extends BaseController
             'region_one_price' => $plan->region_one_price,
             'region_two_price' => $plan->region_two_price,
             'region_three_price' => $plan->region_three_price,
-            'installment_types' => $plan->installment_types()->get()->map(function($installment){
+            'installment_types' => $plan->installment_types()->get()->map(function ($installment) {
                 return [
                     'id' => $installment->id,
                     'title' => $installment->title,
@@ -404,7 +449,7 @@ class PlansController extends BaseController
         $grade = ($plan->grade) ? $plan->grade->title : "همه پایه ها";
         $field = ($plan->field) ? $plan->field->title : "همه رشته ها";
 
-        $courses = $plan->courses->map(function($course){
+        $courses = $plan->courses->map(function ($course) {
             return $this->buildSimpleCourseObject($course);
         });
 
@@ -428,12 +473,13 @@ class PlansController extends BaseController
         return $plan;
     }
 
-    private function getPlansByTag($tag_id){
+    private function getPlansByTag($tag_id)
+    {
         $courses = Course::where('tag_id', $tag_id)->get();
 
         $planList = [];
-        foreach ($courses as $course){
-            $plans = $course->plans()->get()->map(function ($plan){
+        foreach ($courses as $course) {
+            $plans = $course->plans()->get()->map(function ($plan) {
                 return $this->buildPlanObject($plan);
             })->toArray();
 
@@ -467,8 +513,8 @@ class PlansController extends BaseController
 
     private function hasStudentRegisteredToCourse($course, $student)
     {
-        foreach ($course->plans as $plan){
-            if($plan->students->contains($student->id))
+        foreach ($course->plans as $plan) {
+            if ($plan->students->contains($student->id))
                 return 1;
         }
 
@@ -481,7 +527,6 @@ class PlansController extends BaseController
         $tc = new TestsController();
         return $tc->buildTestObject($test, $sid, false);
     }
-
 
 
 }

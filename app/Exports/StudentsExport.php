@@ -35,6 +35,7 @@ class StudentsExport implements FromArray
             'شماره تماس ناظر تحصیلی',
             'آدرس منزل',
             'ایمیل',
+            'طرح های ثبت نامی (غیر رایگان)'
         ];
 
         $data = [$headers];
@@ -61,29 +62,43 @@ class StudentsExport implements FromArray
             $students = Student::all();
 
         // generating students
+        $s_ids = [];
         foreach ($students as $student) {
-            $grade = $student->grade()->first();
-            $field = $student->field()->first();
+            if (!in_array($student->id, $s_ids)) {
+                $grade = $student->grade()->first();
+                $field = $student->field()->first();
+                $item = [
+                    $student->first_name,
+                    $student->last_name,
+                    $student->national_code,
+                    $student->birth_year . '/' . $student->birth_month . '/' . $student->birth_day,
+                    ($grade != null) ? $grade->title : "-",
+                    ($field != null) ? $field->title : "-",
+                    $student->gender == Constant::$GENDER_MALE ? Constant::$GENDER_MALE_TITLE : Constant::$GENDER_FEMALE_TITLE,
+                    $student->parent_code,
+                    $student->phone_number,
+                    $student->home_number,
+                    $student->parent_phone_number,
+                    $student->address,
+                    $student->email,
+                    $this->getStudentPlans($student)
+                ];
 
-            $item = [
-                $student->first_name,
-                $student->last_name,
-                $student->national_code,
-                $student->birth_year . '/' . $student->birth_month . '/' . $student->birth_day,
-                ($grade != null) ? $grade->title : "-",
-                ($field != null) ? $field->title : "-",
-                $student->gender == Constant::$GENDER_MALE ? Constant::$GENDER_MALE_TITLE : Constant::$GENDER_FEMALE_TITLE,
-                $student->parent_code,
-                $student->phone_number,
-                $student->home_number,
-                $student->parent_phone_number,
-                $student->address,
-                $student->email,
-            ];
-
-            array_push($data, $item);
+                array_push($data, $item);
+                array_push($s_ids, $student->id);
+            }
         }
 
         return $data;
+    }
+
+    private function getStudentPlans(Student $student)
+    {
+        $plans = "";
+        foreach ($student->plans()->get() as $plan){
+            if (!$plan->is_free)
+                $plans = $plans . " {$plan->title}/";
+        }
+        return $plans;
     }
 }

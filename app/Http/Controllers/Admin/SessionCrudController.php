@@ -284,15 +284,15 @@ class SessionCrudController extends CrudController
         $session = Session::find($session_id);
 
         /// check for other courses online status
-        if(!$session->is_online){
-            $other_course = Course::where('is_online', 1)->first();
-            if($other_course && $other_course->id != $course->id){
-                return back()->withErrors([
-                    'custom_fail' => true,
-                    'errors' => [".کلاس {$other_course->title} ({$other_course->teacher->name}) درحال حاضر آنلاین میباشد"],
-                ]);
-            }
-        }
+//        if(!$session->is_online){
+//            $other_course = Course::where('is_online', 1)->first();
+//            if($other_course && $other_course->id != $course->id){
+//                return back()->withErrors([
+//                    'custom_fail' => true,
+//                    'errors' => [".کلاس {$other_course->title} ({$other_course->teacher->name}) درحال حاضر آنلاین میباشد"],
+//                ]);
+//            }
+//        }
 
         $session->is_online = !$session->is_online;
         $course->is_online = !$session->is_online;

@@ -4,22 +4,23 @@ namespace App\Models;
 
 use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
 
-class SmsTemplate extends Model
+class DiscountCodeUse extends Model
 {
-    use CrudTrait;
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'sms_templates';
+    protected $table = 'discount_code_uses';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = ['name'];
+    protected $fillable = [
+       'plan_id', 'student_id', 'discount_code_id'
+    ];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -34,10 +35,7 @@ class SmsTemplate extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function messages()
-    {
-        return $this->hasMany('App\Models\Message');
-    }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES

@@ -12,7 +12,6 @@ use App\Models\CourseAccess;
 use App\Models\Field;
 use App\Models\Grade;
 use App\Models\Installment;
-use App\Models\Plan;
 use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 

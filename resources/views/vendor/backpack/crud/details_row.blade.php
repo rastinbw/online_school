@@ -116,6 +116,14 @@
     @if(isset($course))
         <div class="row">
             <div class="col-md-12" dir="rtl">
+                <h5 class="title">استاد : </h5> <h5 class="value">{{ $course->teacher->list_title }}</h5>  <br>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+            <div class="col-md-12" dir="rtl">
                 <h5 class="title">رایگان : </h5> <h5 class="value">{{ $is_free }}</h5>  <br>
             </div>
         </div>

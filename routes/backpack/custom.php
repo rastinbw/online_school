@@ -53,7 +53,6 @@ Route::group([
         Route::get('export_students', 'CourseCrudController@exportCourseStudents');
     });
 
-
     // Plan Crud Routes
     Route::group(['prefix' => 'plan/{plan_id}'], function () {
         Route::get('export_students', 'PlanCrudController@exportPlanStudents');
@@ -61,6 +60,9 @@ Route::group([
     });
     Route::post('import_plan_students_excel', 'PlanCrudController@importPlanStudentsExcel');
 
+    Route::group(['prefix' => 'plan/search/{plan_id}'], function () {
+        CRUD::resource('message', 'PlanMessageCrudController');
+    });
 
     // Student CRUD Other Routes
     Route::group(['prefix' => 'student/search/{student_id}'], function () {

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AccessController;
 use App\Includes\Constant;
 use App\Models\CourseAccess;
 use App\Models\DiscountCode;
+use App\Models\DiscountCodeUse;
 use App\Models\Installment;
 use App\Models\InstallmentType;
 use App\Models\Plan;
@@ -32,7 +33,14 @@ class TransactionController extends BaseController
         $plan = Plan::find($plan_id);
         $region_price = $plan->region_price($student->region);
         $installment_type = InstallmentType::find($installment_type_id);
-        $price = $this->getPrice($region_price, $plan->discount, $discount_code, $installment_type);
+        $price = $this->getPrice(
+            $region_price,
+            $plan->discount,
+            $discount_code,
+            $installment_type,
+            $plan->id,
+            $student->id
+        );
 
         if ($payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT)
             $amount = $this->calculateInstallments($price, $installment_type)[0];
@@ -99,7 +107,8 @@ class TransactionController extends BaseController
                 if ($transaction->transaction_payment_type == Constant::$PAYMENT_TYPE_INSTALLMENT) {
                     $installment_type = InstallmentType::find($transaction->installment_type_id);
                     $price = $this->getPrice(
-                        $plan->region_price($student->region), $plan->discount, $dc, $installment_type
+                        $plan->region_price($student->region),
+                        $plan->discount, $dc, $installment_type, $plan->id, $student->id
                     );
                     $amounts = $this->calculateInstallments($price, $installment_type);
 
@@ -308,17 +317,18 @@ class TransactionController extends BaseController
      * @param $plan_discount
      * @param $discount_code
      * @param $installment_type
+     * @param $plan_id
+     * @param $student_id
      * @return false|float|int
      */
-    private function getPrice($region_price, $plan_discount, $discount_code, $installment_type)
+    private function getPrice($region_price, $plan_discount, $discount_code, $installment_type, $plan_id, $student_id)
     {
         if ($discount_code) {
-            $price = $this->applyDiscountCode($region_price, $discount_code);
+            $price = $this->applyDiscountCode($region_price, $discount_code, $plan_id, $student_id);
             if ($price == $region_price)
                $price = $this->applyPlanDiscount($region_price, $plan_discount, $installment_type);
         } else
             $price = $this->applyPlanDiscount($region_price, $plan_discount, $installment_type);
-
         return $price;
     }
 
@@ -334,7 +344,7 @@ class TransactionController extends BaseController
         return $installments;
     }
 
-    private function applyDiscountCode($price, $discount_code)
+    private function applyDiscountCode($price, $discount_code, $plan_id, $student_id)
     {
         $amount = $price;
         $code = DiscountCode::where('code', $discount_code)->first();
@@ -343,6 +353,12 @@ class TransactionController extends BaseController
                 $amount = ceil($amount - ($amount * $code->discount_percent / 100));
             else
                 $amount = $amount - $code->discount_price;
+
+            $use = new DiscountCodeUse();
+            $use->student_id = $student_id;
+            $use->plan_id = $plan_id;
+            $use->discount_code_id = $code->id;
+            $use->save();
         }
 
         return $amount;

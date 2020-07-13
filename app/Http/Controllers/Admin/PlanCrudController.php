@@ -11,6 +11,7 @@ use App\Models\Course;
 use App\Models\Field;
 use App\Models\Grade;
 use App\Models\Plan;
+use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
@@ -248,7 +249,7 @@ class PlanCrudController extends CrudController
                 'type' => 'image',
                 'upload' => true,
                 'crop' => true, // set to true to allow cropping, false to disable
-                'aspect_ratio' => 1, // ommit or set to 0 to allow any aspect ratio
+                'aspect_ratio' => 2, // ommit or set to 0 to allow any aspect ratio
                 'disk' => 'public', // in case you need to show images from a different disk
                 // 'prefix' => 'images' // in case you only store the filename in the database, this text will be prepended to the database value
             ],
@@ -309,6 +310,7 @@ class PlanCrudController extends CrudController
             $this->crud->addClause('where', 'is_free', $value);
         });
 
+        $this->crud->addButtonFromView('line', 'plan_message', 'plan_message', 'beginning');
         $this->crud->addButtonFromView('line', 'export_plan_students', 'export_plan_students', 'beginning');
         $this->crud->addButtonFromView('line', 'import_plan_students', 'import_plan_students', 'beginning');
 
@@ -331,9 +333,12 @@ class PlanCrudController extends CrudController
 
     public function importPlanStudentsExcel(Request $req)
     {
+        $path1 =  $req->file('file')->store('temp');
+        $path=storage_path('app').'/'.$path1;
+
         Excel::import(
             new PlanStudentsImport($req->input('plan_id')),
-            $req->file('file')->getRealPath()
+            $path
         );
 
         return redirect(URL::to('/admin/plan'));
@@ -476,5 +481,24 @@ class PlanCrudController extends CrudController
         } catch (Exception $e) {
             return $e;
         }
+    }
+
+    public function destroy($id)
+    {
+        $this->crud->hasAccessOrFail('delete');
+
+        $errors = [];
+        if (sizeof(Plan::find($id)->students) > 0) {
+            array_push(
+                $errors,
+                "دانش آموزانی در این طرح ثبت نام کرده اند."
+            );
+        }
+
+        if (sizeof($errors) > 0) {
+            return response()->json(array('errors' => $errors), 400);
+        }
+
+        return $this->crud->delete($id);
     }
 }
