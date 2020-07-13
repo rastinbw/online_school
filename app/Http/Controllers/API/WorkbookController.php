@@ -44,10 +44,16 @@ class WorkbookController extends BaseController
 
     public function saveWorkbook($student, $test, $answers)
     {
-        $answers = json_decode($answers);
+        // $answers = json_decode($answers);
+        $object = [];
+        foreach (json_decode($answers) as $key => $value)
+            $object[$key] = $value;
+
+        $answers = $object;
         $options = json_decode($test->options);
         $factors = json_decode($test->factors);
 
+        //echo dd($answers);
         $check_table = $this->getCheckTable($options, $factors, $answers);
         $workbook = $this->createWorkbook($factors);
         $this->calculateCounts($workbook, $check_table, $factors);
@@ -73,12 +79,12 @@ class WorkbookController extends BaseController
 
     private function getCheckTable($options, $factors, $answers)
     {
-        $answers = (array)$answers;
+        //$answers = (array)$answers;
         $table = [];
 
         if ($factors) {
             foreach ($factors as $factor) {
-                for ($i = (int)$factor->q_number_from; $i <= (int)$factor->q_number_to; $i++) {
+                for ($i = (int)$factor->q_number_from - 1; $i <= (int)$factor->q_number_to - 1; $i++) {
                     $answer = $answers[$i];
                     $co_answer = $this->getOptionAnswer($options, $i);
                     if ($answer == $co_answer) {

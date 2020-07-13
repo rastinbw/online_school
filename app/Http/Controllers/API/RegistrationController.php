@@ -103,6 +103,8 @@ class RegistrationController extends BaseController
         $student->last_name = $req->input('last_name');
         $student->referrer_code = Helper::convertPersianToEnglish($req->input('referrer_code'));
         $student->region = $req->input('region');;
+        $student->grade_id = $req->input('grade_id');;
+        $student->field_id = $req->input('field_id');;
         $student->password = Hash::make($password);
 
         $student->token = bin2hex(random_bytes(16));
