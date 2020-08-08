@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\InstallmentsExport;
 use App\Exports\StudentsExport;
 use App\Exports\TestRecordsExport;
+use App\Http\Controllers\API\PlansController;
 use App\Includes\Constant;
 use App\Includes\Helper;
+use App\Includes\HttpRequest;
 use App\Includes\Skyroom;
 use App\Models\CourseAccess;
 use App\Models\Field;
 use App\Models\Grade;
 use App\Models\Installment;
+use App\Models\Plan;
 use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
@@ -40,6 +43,47 @@ class StudentCrudController extends CrudController
         $this->crud->setModel('App\Models\Student');
         $this->crud->setRoute(config('backpack.base.route_prefix') . '/student');
         $this->crud->setEntityNameStrings('دانش آموز', 'دانش آموزان');
+
+//        $plan = Plan::find(30);
+//        foreach ($plan->courses as $course){
+//            CourseAccess::where([
+//                ['student_id', 437],
+//                ['course_id', $course->id]
+//            ])->delete();
+//
+//            CourseAccess::where([
+//                ['student_id', 606],
+//                ['course_id', $course->id]
+//            ])->delete();
+//        }
+//
+//        $plan->students()->detach(437);
+//        $plan->students()->detach(606);
+
+          //$students = Student::where('grade_id', 19)->get();
+//        dd($students);
+
+//        $students = Student::where('national_code', '2580974555')->get();
+//
+//        dd(sizeof($students));
+//        foreach ($students as $student){
+//            $url = 'https://api.kavenegar.com/v1/' .
+//                env('SMS_API_KEY') .
+//                '/verify/lookup.json?receptor=' .
+//                $student->phone_number .
+//                '&template=' .
+//                'yazdahomiSummerCoursesLink' .
+//                '&token=18&token2=ریاضی&token3=https://www.skyroom.online/ch/amirdaneshmand08/course111';
+//
+//            $http = new HttpRequest($url);
+//            $http->get();
+//        }
+
+//        foreach (Plan::all() as $plan){
+//            $student = Student::where('national_code', '2580974555')->first();
+//            $pc = new PlansController();
+//            $pc->registerInPlan($student, $plan);
+//        }
 
         /*
         |--------------------------------------------------------------------------

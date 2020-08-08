@@ -37,7 +37,10 @@ class DiscountCode extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-
+    public function plans()
+    {
+        return $this->belongsToMany('App\Models\Plan');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

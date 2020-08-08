@@ -6,6 +6,7 @@ use App\Http\Requests\TestAccessRequest as StoreRequest;
 use App\Http\Requests\TestAccessRequest as UpdateRequest;
 use App\Includes\Constant;
 use App\Models\Test;
+use App\Models\TestAccess;
 use Carbon\Carbon;
 
 class StudentTestAccessCrudController extends TestAccessCrudController
@@ -48,6 +49,32 @@ class StudentTestAccessCrudController extends TestAccessCrudController
         );
     }
 
+    public function edit($id)
+    {
+        $this->crud->hasAccessOrFail('update');
+
+        // get entry ID from Request (makes sure its the last ID for nested resources)
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        // get the info for that entry
+        $this->data['entry'] = $this->crud->getEntry($id);
+        $this->data['crud'] = $this->crud;
+        $this->data['saveAction'] = $this->getSaveAction();
+        $this->data['fields'] = $this->crud->getUpdateFields($id);
+        $this->data['title'] = trans('backpack::crud.edit') . ' ' . $this->crud->entity_name;
+        $this->data['id'] = $id;
+
+        $access = TestAccess::find($id);
+
+        $this->data['extra'] = json_encode(
+            [
+                'old_has_access' => $access->has_access,
+            ]
+        );
+
+        return view($this->crud->getEditView(), $this->data);
+    }
+
     public function store(StoreRequest $request)
     {
         $redirect_location = parent::storeCrud();
@@ -61,6 +88,7 @@ class StudentTestAccessCrudController extends TestAccessCrudController
 
         $access = $this->data['entry'];
         $test = Test::find($access->test_id);
+
         // if test not reached it's end make it unchangeable
         if (($test->start_date <= Carbon::now() && $test->exam_holding_type == Constant::$SPECIAL_DATE_AND_TIME) ||
             ($test->finish_date <= Carbon::now() && $test->exam_holding_type == Constant::$FREE_TESTS)){

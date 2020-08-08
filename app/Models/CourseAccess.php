@@ -29,11 +29,17 @@ class CourseAccess extends Model
     |--------------------------------------------------------------------------
     */
     public function getCourseTitleAttribute(){
-        return $this->course->title;
+        if ($this->course)
+            return $this->course->title;
+        else
+            return 'عنوان';
     }
 
     public function getCourseTeacherAttribute(){
-        return $this->course->teacher->list_title;
+        if ($this->course)
+            return $this->course->teacher->list_title;
+        else
+            return 'عنوان';
     }
 
     /*

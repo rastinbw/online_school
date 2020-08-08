@@ -15,7 +15,7 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('success')->nullable();
+            $table->integer('success')->nullable()->default(0);
             $table->string('title')->nullable();
             $table->string('issue_tracking_no')->nullable();
             $table->string('order_no')->nullable();

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Admin\AccessController;
 use App\Includes\Constant;
+use App\Includes\Helper;
 use App\Models\CourseAccess;
 use App\Models\DiscountCode;
 use App\Models\DiscountCodeUse;
+use App\Models\Help;
 use App\Models\Installment;
 use App\Models\InstallmentType;
 use App\Models\Plan;
@@ -28,7 +30,7 @@ class TransactionController extends BaseController
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
         $installment_type_id = ($installment_type_id != 'null') ? $installment_type_id : null;
-        $discount_code = ($discount_code != 'null') ? $discount_code : null;
+        $discount_code = ($discount_code != 'null') ? Helper::convertPersianToEnglish($discount_code) : null;
 
         $plan = Plan::find($plan_id);
         $region_price = $plan->region_price($student->region);
@@ -145,6 +147,12 @@ class TransactionController extends BaseController
                 if ($discount_code){
                     $discount_code->use_count = $discount_code->use_count + 1;
                     $discount_code->save();
+
+                    $use = new DiscountCodeUse();
+                    $use->student_id = $transaction->student_id;
+                    $use->plan_id = $transaction->plan_id;
+                    $use->discount_code_id = $discount_code->id;
+                    $use->save();
                 }
 
                 // register student into plan
@@ -348,17 +356,19 @@ class TransactionController extends BaseController
     {
         $amount = $price;
         $code = DiscountCode::where('code', $discount_code)->first();
-        if ($code && $code->deadline_date > Carbon::now() && $code->use_limit > $code->use_count) {
+
+        $check_code_plans = true;
+        if ($code->plans->count() > 0)
+           $check_code_plans = $code->plans->contains($plan_id);
+
+        if ($code &&
+            $check_code_plans &&
+            $code->deadline_date > Carbon::now() &&
+            $code->use_limit > $code->use_count) {
             if ($code->type == Constant::$DISCOUNT_TYPE_PERCENT)
                 $amount = ceil($amount - ($amount * $code->discount_percent / 100));
             else
                 $amount = $amount - $code->discount_price;
-
-            $use = new DiscountCodeUse();
-            $use->student_id = $student_id;
-            $use->plan_id = $plan_id;
-            $use->discount_code_id = $code->id;
-            $use->save();
         }
 
         return $amount;

@@ -26,7 +26,7 @@ class DiscountCodeRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'code' => 'required'
         ];
     }
 
@@ -50,7 +50,8 @@ class DiscountCodeRequest extends FormRequest
     public function messages()
     {
         return [
-            //
+            'required' => 'مقداردهی این فیلد الزامی میباشد.',
+            'max' => 'حداکثر 255 کاراکتر',
         ];
     }
 }

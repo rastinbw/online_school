@@ -65,6 +65,17 @@ class DiscountCodeCrudController extends CrudController
 
         $this->crud->addFields([
             [
+                'name' => 'code',
+                'label' => 'کد',
+                'default' => $this->getToken(6),
+                'attributes' => [
+                    'dir' => 'rtl',
+                ],
+                'wrapperAttributes' => [
+                    'dir' => 'rtl',
+                ],
+            ],
+            [
                 'label' => 'نوع کاهش قیمت',
                 'name' => 'type',
                 'type' => 'toggle',
@@ -171,6 +182,23 @@ class DiscountCodeCrudController extends CrudController
                     'class' => 'col-md-4',
                 ],
             ],
+            [
+                'label' => "طرح ها",
+                'type' => 'select2_multiple',
+                'name' => 'plans', // the method that defines the relationship in your Model
+                'entity' => 'plans', // the method that defines the  relationship in your Model
+                'attribute' => 'title', // foreign key attribute that is shown to user
+                'model' => "App\Models\Plan", // foreign key model
+                'pivot' => true, // on create&update, do you need to add/delete pivot table entries?
+                // 'select_all' => true, // show Select All and Clear buttons?
+                'attributes' => [
+                    'dir' => 'rtl',
+                ],
+                'wrapperAttributes' => [
+                    'style' => 'margin-top:15px',
+                    'dir' => 'rtl',
+                ],
+            ],
         ], 'update/create/both');
     }
 
@@ -187,7 +215,7 @@ class DiscountCodeCrudController extends CrudController
         );
 
         $discount->deadline_date = new Carbon("{$gDateDeadline[0]}-{$gDateDeadline[1]}-{$gDateDeadline[2]}");
-        $discount->code = $this->getToken(6);
+        // $discount->code = $this->getToken(6);
         $discount->save();
 
 

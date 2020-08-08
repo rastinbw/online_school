@@ -249,7 +249,7 @@ class PlansController extends BaseController
         foreach ($student->plans()->get() as $plan) {
             foreach ($plan->courses()->get() as $course) {
                 foreach ($course->sessions()->get() as $s) {
-                    if ($s->is_online == 1) {
+                    if ($s->is_online == 1 && $s->show_session == 1) {
                         array_push($sessions, $s);
                     }
                 }
@@ -258,7 +258,8 @@ class PlansController extends BaseController
 
         $free_sessions = Session::where([
             ['is_free', 1],
-            ['is_online', 1]
+            ['is_online', 1],
+            ['show_session', 1]
         ])->get();
 
         foreach ($free_sessions as $s)
@@ -303,6 +304,12 @@ class PlansController extends BaseController
             ['is_free', 1]
         ])->exists();
 
+        $sessions = [];
+        foreach ($course->sessions as $session){
+            if ($session->show_session == 1)
+                array_push($sessions, $session);
+        }
+
         return [
             "id" => $course->id,
             "title" => $course->title,
@@ -329,9 +336,9 @@ class PlansController extends BaseController
             "tag" => $course->tag()->get()->map(function ($tag) {
                 return $this->buildTagObject($tag);
             })[0],
-            "sessions" => $course->sessions->map(function ($session) use ($access, $course, $has_registered) {
+            "sessions" => array_map(function ($session) use ($access, $course, $has_registered) {
                 return $this->buildSessionObject($course, $session, $access, $has_registered);
-            }),
+            }, $sessions),
             "tests" => $course->tests->map(function ($test) use ($student) {
                 return $this->buildTestObject($test, $student);
             })

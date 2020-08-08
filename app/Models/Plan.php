@@ -98,6 +98,11 @@ class Plan extends Model
         return $this->belongsToMany('App\Models\Course');
     }
 
+    public function discountCodes()
+    {
+        return $this->belongsToMany('App\Models\DiscountCode');
+    }
+
     public function sliderPlan()
     {
         return $this->hasOne('App\Models\SliderPlan');

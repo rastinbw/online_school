@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\TransactionsExport;
 use App\Http\Controllers\API\PlansController;
 use App\Imports\PlanStudentsImport;
 use App\Exports\StudentsExport;
@@ -12,6 +13,7 @@ use App\Models\Field;
 use App\Models\Grade;
 use App\Models\Plan;
 use App\Models\Student;
+use App\Models\Transaction;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
@@ -249,7 +251,7 @@ class PlanCrudController extends CrudController
                 'type' => 'image',
                 'upload' => true,
                 'crop' => true, // set to true to allow cropping, false to disable
-                'aspect_ratio' => 2, // ommit or set to 0 to allow any aspect ratio
+                'aspect_ratio' => 0, // ommit or set to 0 to allow any aspect ratio
                 'disk' => 'public', // in case you need to show images from a different disk
                 // 'prefix' => 'images' // in case you only store the filename in the database, this text will be prepended to the database value
             ],
@@ -270,7 +272,6 @@ class PlanCrudController extends CrudController
                 ],
             ],
         ]);
-
 
         $this->crud->addFilter([ // select2 filter
             'name' => 'grade_id',
@@ -312,6 +313,7 @@ class PlanCrudController extends CrudController
 
         $this->crud->addButtonFromView('line', 'plan_message', 'plan_message', 'beginning');
         $this->crud->addButtonFromView('line', 'export_plan_students', 'export_plan_students', 'beginning');
+        $this->crud->addButtonFromView('line', 'export_plan_transactions', 'export_plan_transactions', 'beginning');
         $this->crud->addButtonFromView('line', 'import_plan_students', 'import_plan_students', 'beginning');
 
         $this->crud->enableDetailsRow();
@@ -322,6 +324,12 @@ class PlanCrudController extends CrudController
     {
         $export = new StudentsExport($plan_id);
         return Excel::download($export, 'لیست دانش آموزان.xlsx');
+    }
+
+    public function exportPlanTransactions($plan_id)
+    {
+        $export = new TransactionsExport($plan_id);
+        return Excel::download($export, 'تراکنش ها.xlsx');
     }
 
     public function importPlanStudents($plan_id)

@@ -2,6 +2,8 @@
 namespace App\Exports;
 
 use App\Includes\Constant;
+use App\Includes\Helper;
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\Plan;
 use App\Models\Student;
@@ -58,8 +60,20 @@ class StudentsExport implements FromArray
         } elseif($this->student_id != null) {
             $student = Student::find($this->student_id);
             $students = Student::where('referrer_code', $student->student_refer_code)->get();
-        } else
+        } else{
             $students = Student::all();
+//            $students = [];
+//            $list = Student::where('grade_id', 19)->get();
+//            $plans = Plan::where('category_id', 1)->get();
+//
+//            foreach ($list as $student){
+//               foreach ($plans as $plan){
+//                   if ($plan->students->contains($student->id))
+//                       continue 2;
+//               }
+//               array_push($students, $student);
+//            }
+        }
 
         // generating students
         $s_ids = [];

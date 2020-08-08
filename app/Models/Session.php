@@ -23,7 +23,7 @@ class Session extends Model
     // protected $guarded = ['id'];
     protected $fillable = [
         'title','date_year','date_month','date_day','start_hour','start_min','finish_hour','finish_min', 'video_download_link',
-        'course_id','status','video_link','notes','description', 'is_online', 'held', 'is_free', 'start_date', 'finish_date'];
+        'course_id','status','video_link','notes','description', 'is_online', 'held', 'is_free', 'start_date', 'finish_date', 'show_session'];
     // protected $hidden = [];
     // protected $dates = [];
 

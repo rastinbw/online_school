@@ -50,7 +50,7 @@ Route::get('/api/courses', 'API\MainPageController@sendCourses');
 Route::get('/api/teachers', 'API\MainPageController@sendTeachers');
 Route::get('/api/links', 'API\MainPageController@sendLinks');
 Route::get('/api/about', 'API\MainPageController@sendAbout');
-Route::post('/api/parent', 'API\MainPageController@loginAsParent');
+Route::get('/api/parent/{parent_code}', 'API\ParentsPageController@getParentPage');
 
 // Registration Routes
 Route::post('/api/registration/code', 'API\RegistrationController@sendVerificationCode');
@@ -61,7 +61,6 @@ Route::post('/api/token/check', 'API\RegistrationController@checkToken');
 Route::post('/api/student/password/reset/link/send', 'API\RegistrationController@sendResetPasswordLink');
 Route::get('/api/student/password/reset/form/{token}', 'API\RegistrationController@resetPasswordForm');
 Route::post('/api/student/password/reset', 'API\RegistrationController@resetPassword');
-
 
 // Profile Routes
 Route::post('/api/profile/get', 'API\ProfileController@getProfile');
@@ -102,6 +101,7 @@ Route::post('/api/test/enter', 'API\TestsController@enterTest');
 Route::post('/api/test/save', 'API\TestsController@saveTestRecord');
 Route::get('/api/test/{test_id}/pdf', 'API\TestsController@getTestPdfFile');
 Route::get('/api/time/current', 'API\TestsController@getCurrentTime');
+Route::post('/api/test/answers', 'API\TestsController@getAnswers');
 
 // Workbook Routes
 Route::post('/api/student/test/workbook', 'API\WorkbookController@getWorkbook');

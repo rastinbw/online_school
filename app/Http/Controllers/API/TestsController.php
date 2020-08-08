@@ -135,10 +135,16 @@ class TestsController extends BaseController
                         );
                 }
             } else {
-                array_push(
-                    $categorized_tests[Constant::$FREE_TESTS],
-                    $this->buildTestObject($test, $student_id)
-                );
+                if ($this->getStudentTestStatus($student_id, $test->id) == Constant::$TEST_TAKEN)
+                    array_push(
+                        $categorized_tests[Constant::$TAKEN_TESTS],
+                        $this->buildTestObject($test, $student_id)
+                    );
+                else
+                    array_push(
+                        $categorized_tests[Constant::$FREE_TESTS],
+                        $this->buildTestObject($test, $student_id)
+                    );
             }
         }
 
@@ -173,7 +179,7 @@ class TestsController extends BaseController
 
         $test_start_date = new Carbon($test->start_date);
         $test_finish_date = new Carbon($test->finish_date);
-        return $test_finish_date->diffInMinutes($test_start_date);
+        return $test_finish_date->diffInSeconds($test_start_date);
     }
 
     private function getStudentTestAccess($test, $student_id)
@@ -218,7 +224,24 @@ class TestsController extends BaseController
             $qa_access_time = "{$test->qa_access_date_hour}/{$test->qa_access_date_min}";
         }
 
+        $taking = TakingTest::where([
+            ['student_id', $student_id],
+            ['test_id', $test->id],
+        ])->first();
+
+        $duration = null;
+        $finish_date = null;
+        if ($taking){
+            $duration = $this->getTestDuration($test);
+            $finish_date = new Carbon($taking->enter_date);
+            $finish_date->addSeconds($duration);
+            $finish_date = $finish_date->toTimeString();
+        }
+
+
         $object = [
+            'd' => $duration,
+            'f' => $finish_date,
             'id' => $test->id,
             'course_id' => $test->course_id,
             'title' => $test->title,
@@ -267,7 +290,7 @@ class TestsController extends BaseController
         $test = Test::find($test_id);
         $duration = $this->getTestDuration($test);
         $finish_date = new Carbon($taking->enter_date);
-        $finish_date->addMinutes($duration);
+        $finish_date->addSeconds($duration);
 
         if ($finish_date <= Carbon::now())
             return Constant::$TEST_TAKEN;
@@ -280,12 +303,12 @@ class TestsController extends BaseController
         $test = Test::find($taking->test_id);
         $duration = $this->getTestDuration($test);
         $finish_date = new Carbon($taking->enter_date);
-        $finish_date->addMinutes($duration);
+        $finish_date->addSeconds($duration);
 
         if ($finish_date <= Carbon::now())
             return 0;
         else
-            return $finish_date->diffInMinutes(Carbon::now());
+            return $finish_date->diffInSeconds(Carbon::now());
     }
 
     public function enterTest(Request $req)
@@ -364,5 +387,21 @@ class TestsController extends BaseController
             Constant::$SUCCESS,
             Carbon::now()->timestamp
         );
+    }
+
+    public function getAnswers(Request $req)
+    {
+        $test = Test::find($req->input('test_id'));
+        if ($test->answers_file){
+            return $this->sendResponse(
+                Constant::$SUCCESS,
+                $test->answers_file
+            );
+        }else{
+            return $this->sendResponse(
+                Constant::$NO_ANSWER_FILE,
+                null
+            );
+        }
     }
 }

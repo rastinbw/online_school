@@ -46,7 +46,7 @@ class WorkbookController extends BaseController
     {
         // $answers = json_decode($answers);
         $object = [];
-        foreach (json_decode($answers) as $key => $value)
+        foreach ($answers as $key => $value)
             $object[$key] = $value;
 
         $answers = $object;
@@ -98,7 +98,7 @@ class WorkbookController extends BaseController
             }
         } else {
             foreach ($options as $option) {
-                $answer = $answers[$option->q_number];
+                $answer = $answers[$option->q_number - 1];
                 if ($answer == $option->co_number) {
                     $table[$option->q_number] = Constant::$CORRECT;
                 } elseif ($answer == "empty") {

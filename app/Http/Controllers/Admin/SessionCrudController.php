@@ -44,6 +44,15 @@ class SessionCrudController extends CrudController
 
         $this->crud->addColumns([
             [
+                'name' => 'show_session',
+                'label' => 'نمایش جلسه',
+                'type' => 'select_from_array',
+                'options' => [
+                    0 => 'خیر',
+                    1  => 'بله',
+                ],
+            ],
+            [
                 'name' => 'title',
                 'label' => 'عنوان',
             ],
@@ -96,6 +105,20 @@ class SessionCrudController extends CrudController
         ]);
 
         $this->crud->addFields([
+            [
+                'label' => 'نمایش جلسه',
+                'name' => 'show_session',
+                'type' => 'radio',
+                'inline' => true,
+                'options' => [
+                    0 => 'خیر',
+                    1 => 'بله',
+                ],
+                'wrapperAttributes' => [
+                    'style' => 'margin-top:15px',
+                ],
+                'default' => 1,
+            ],
             [
                 'name' => 'title',
                 'label' => '* عنوان',
@@ -295,9 +318,9 @@ class SessionCrudController extends CrudController
 //        }
 
         $session->is_online = !$session->is_online;
-        $course->is_online = !$session->is_online;
-        $session->save();
+        $course->is_online = $session->is_online;
         $course->save();
+        $session->save();
 
         if($session->is_online){
             // set all other sessions offline
@@ -323,6 +346,10 @@ class SessionCrudController extends CrudController
         $session->held = !$session->held;
         $session->is_online = 0;
         $session->save();
+
+        $course = Course::find($course_id);
+        $course->is_online = 0;
+        $course->save();
 
         return back();
     }

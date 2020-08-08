@@ -57,8 +57,22 @@ class Transaction extends Model
 
     public function getStudentNationalCodeAttribute()
     {
-        return Student::find($this->student_id)->national_code;
+        $student = Student::find($this->student_id);
+        if ($student)
+            return $student->national_code;
+        else
+            return "یافت نشد";
     }
+
+    public function getStudentNameAttribute()
+    {
+        $student = Student::find($this->student_id);
+        if ($student)
+            return $student->first_name . " " . $student->last_name;
+        else
+            return "یافت نشد";
+    }
+
 
     /*
     |--------------------------------------------------------------------------

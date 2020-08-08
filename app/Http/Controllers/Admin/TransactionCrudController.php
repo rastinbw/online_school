@@ -61,6 +61,10 @@ class TransactionCrudController extends CrudController
                 'label' => 'مبلغ',
             ],
             [
+                'name' => 'student_name',
+                'label' => 'نام دانش آموز',
+            ],
+            [
                 'name' => 'student_national_code',
                 'label' => 'کد ملی دانش آموز',
             ],
@@ -99,8 +103,8 @@ class TransactionCrudController extends CrudController
         }
         );
 
-        $this->crud->enableBulkActions();
-        $this->crud->addBulkDeleteButton();
+//        $this->crud->enableBulkActions();
+//        $this->crud->addBulkDeleteButton();
     }
 
     public function store(StoreRequest $request)
