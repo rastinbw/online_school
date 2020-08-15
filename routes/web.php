@@ -61,6 +61,7 @@ Route::post('/api/token/check', 'API\RegistrationController@checkToken');
 Route::post('/api/student/password/reset/link/send', 'API\RegistrationController@sendResetPasswordLink');
 Route::get('/api/student/password/reset/form/{token}', 'API\RegistrationController@resetPasswordForm');
 Route::post('/api/student/password/reset', 'API\RegistrationController@resetPassword');
+Route::get('/api/lp/get/{lp_id}', 'API\RegistrationController@getLandingPage');
 
 // Profile Routes
 Route::post('/api/profile/get', 'API\ProfileController@getProfile');

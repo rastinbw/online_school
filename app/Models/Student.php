@@ -20,7 +20,7 @@ class Student extends Model
     // public $timestamps = false;
     // protected $guarded = ['id'];
     protected $fillable = [
-        'verification_code','verified','token','first_name','last_name','national_code', 'home_number','phone_number',
+        'landing_page_id', 'verification_code','verified','token','first_name','last_name','national_code', 'home_number','phone_number',
         'parent_phone_number','parent_code', 'password','email','address','gender','grade_id','field_id',
         'enrollment_certificate_image','national_card_image', 'region', 'sky_room_id', 'unprotected_password', 'status'
     ];
@@ -40,6 +40,11 @@ class Student extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function landingPage()
+    {
+        return $this->belongsTo('App\Models\LandingPage');
+    }
+
     public function grade()
     {
         return $this->belongsTo('App\Models\Grade');

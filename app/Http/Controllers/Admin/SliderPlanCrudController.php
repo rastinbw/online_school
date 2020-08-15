@@ -42,7 +42,7 @@ class SliderPlanCrudController extends CrudController
                 'type' => 'image',
                 'upload' => true,
                 'crop' => true, // set to true to allow cropping, false to disable
-                'aspect_ratio' => 2, // ommit or set to 0 to allow any aspect ratio
+                'aspect_ratio' => 0, // ommit or set to 0 to allow any aspect ratio
                 'disk' => 'public', // in case you need to show images from a different disk
                 // 'prefix' => 'images' // in case you only store the filename in the database, this text will be prepended to the database value
             ],

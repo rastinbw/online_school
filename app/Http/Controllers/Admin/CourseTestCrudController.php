@@ -390,4 +390,13 @@ class CourseTestCrudController extends TestCrudController
     }
 
 
+    public function destroy($id)
+    {
+        $this->crud->hasAccessOrFail('delete');
+
+        TestRecord::where('test_id', $id)->delete();
+        TestAccess::where('test_id', $id)->delete();
+
+        return $this->crud->delete($id);
+    }
 }

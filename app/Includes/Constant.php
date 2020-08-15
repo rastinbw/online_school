@@ -26,6 +26,7 @@ class Constant
     public static $NO_WORKBOOK = 1126 ;
     public static $NO_RECORD = 1127;
     public static $NO_ANSWER_FILE = 1128;
+    public static $LP_NOT_FOUND = 1129;
 
     public static $GENDER_MALE = 1;
     public static $GENDER_MALE_TITLE = "پسر";

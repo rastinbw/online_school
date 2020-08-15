@@ -174,6 +174,8 @@
                         $scope.items.push(item);
                     }
 
+                    $scope.items[$scope.items.length-1]['q_number'] = $scope.items.length;
+
                     // if($scope.items.length >= 2){
                     //     $prev = $scope.items[$scope.items.length-2];
                     //     $prev['cross'] = $prev['price']* $prev['count'];

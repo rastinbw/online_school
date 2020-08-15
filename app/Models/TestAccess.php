@@ -29,21 +29,34 @@ class TestAccess extends Model
     |--------------------------------------------------------------------------
     */
     public function getCourseTitleAttribute(){
-        $course = Course::find($this->test->course_id);
-        return $course->title;
+        if ($this->test){
+            $course = Course::find($this->test->course_id);
+            return $course->title;
+        }else
+            return "یافت نشد";
     }
 
+
     public function getCourseTeacherAttribute(){
-        $course = Course::find($this->test->course_id);
-        return $course->teacher->list_title;
+        if ($this->test){
+            $course = Course::find($this->test->course_id);
+            return $course->teacher->list_title;
+        }else
+            return "یافت نشد";
     }
 
     public function getTestTitleAttribute(){
-        return $this->test->title;
+        if ($this->test)
+            return $this->test->title;
+        else
+            return "یافت نشد";
     }
 
     public function getTestHoldingTypeAttribute(){
-        return $this->test->exam_holding_type;
+        if ($this->test)
+            return $this->test->exam_holding_type;
+        else
+            return "یافت نشد";
     }
     /*
     |--------------------------------------------------------------------------

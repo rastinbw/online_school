@@ -5,16 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\InstallmentsExport;
 use App\Exports\StudentsExport;
 use App\Exports\TestRecordsExport;
-use App\Http\Controllers\API\PlansController;
 use App\Includes\Constant;
 use App\Includes\Helper;
-use App\Includes\HttpRequest;
 use App\Includes\Skyroom;
 use App\Models\CourseAccess;
 use App\Models\Field;
 use App\Models\Grade;
 use App\Models\Installment;
-use App\Models\Plan;
 use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
@@ -119,6 +116,14 @@ class StudentCrudController extends CrudController
             [
                 'name' => 'last_name',
                 'label' => 'نام خانوادگی',
+            ],
+            [
+                'name' => 'national_code',
+                'label' => 'کد ملی',
+            ],
+            [
+                'name' => 'phone_number',
+                'label' => 'شماره تماس',
             ],
             [
                 'name' => 'status',

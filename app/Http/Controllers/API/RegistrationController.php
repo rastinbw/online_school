@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CourseTestCrudController;
 use App\Includes\Constant;
 use App\Includes\Helper;
 use App\Includes\HttpRequest;
+use App\Models\LandingPage;
 use App\Models\NationalCodePlanPair;
 use App\Models\Plan;
 use App\Models\Student;
@@ -49,6 +50,7 @@ class RegistrationController extends BaseController
             // $code = 1111;
             $code = mt_rand(1000, 9999);
             $student->verification_code = $code;
+            $student->landing_page_id = $req->input('lp_id');
             $student->save();
 
             $url = 'https://api.kavenegar.com/v1/' .
@@ -131,10 +133,12 @@ class RegistrationController extends BaseController
             AccessController::createStudentPlanTestAccesses($plan->id, $student->id, 1);
             CourseTestCrudController::generateStudentPlanTestRecords($plan->id, $student->id);
         }
-
         SkyRoomController::addStudentToRooms($access_list, $student->sky_room_id);
 
-        return $this->sendResponse(Constant::$SUCCESS, ['token' => $student->token]);
+        $lp = ($student->landing_page_id) ? LandingPage::find($student->landing_page_id) : null;
+        $plan_id = ($lp) ? $lp->plan_id : null;
+
+        return $this->sendResponse(Constant::$SUCCESS, ['token' => $student->token, 'plan_id' => $plan_id]);
     }
 
     public function login(Request $req)
@@ -170,7 +174,8 @@ class RegistrationController extends BaseController
 
         $data = [
             'is_profile_completed' => $student->is_profile_completed,
-            'passed_threshold' => $student->created_at <= Carbon::now()->subHours(336)->toDateTimeString() ? 1 : 0,
+            // 'passed_threshold' => $student->created_at <= Carbon::now()->subHours(336)->toDateTimeString() ? 1 : 0,
+            'passed_threshold' => 0,
             'region' => $student->region,
             'full_name' => $student->name
         ];
@@ -280,5 +285,26 @@ class RegistrationController extends BaseController
             $student->save();
             return back()->with('ok', '.رمز عبور با موفقیت تغییر یافت');
         }
+    }
+
+    public function getLandingPage(Request $req, $lp_id){
+        $lp = LandingPage::find($lp_id);
+
+        if (!$lp)
+            return $this->sendResponse(Constant::$LP_NOT_FOUND, null);
+
+        $result =  [
+            'id' => $lp->id,
+            'plan_id' => $lp->plan_id,
+            'title' => $lp->title,
+            'second_title' => $lp->second_title,
+            'description' => $lp->description,
+            'button_text' => $lp->button_text,
+            'cover' => $lp->cover,
+            'video_link' => $lp->video_link
+        ];
+
+        return $this->sendResponse(Constant::$SUCCESS, $result);
+
     }
 }

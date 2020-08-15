@@ -147,6 +147,11 @@ class Plan extends Model
     {
         return $this->hasMany('App\Models\Message');
     }
+
+    public function landingPages()
+    {
+        return $this->hasMany('App\Models\LandingPage');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

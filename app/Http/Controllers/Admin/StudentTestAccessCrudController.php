@@ -5,6 +5,7 @@ use App\Http\Controllers\API\TestsController;
 use App\Http\Requests\TestAccessRequest as StoreRequest;
 use App\Http\Requests\TestAccessRequest as UpdateRequest;
 use App\Includes\Constant;
+use App\Models\TakingTest;
 use App\Models\Test;
 use App\Models\TestAccess;
 use Carbon\Carbon;
@@ -88,6 +89,18 @@ class StudentTestAccessCrudController extends TestAccessCrudController
 
         $access = $this->data['entry'];
         $test = Test::find($access->test_id);
+
+        $old = json_decode($request->input('extra'))->old_has_access;
+        $new = $access->has_access;
+        if ($new > $old){
+            $taking = TakingTest::where([
+                ['student_id', $access->student_id],
+                ['test_id', $test->id],
+            ])->first();
+
+            if ($taking)
+                $taking->delete();
+        }
 
         // if test not reached it's end make it unchangeable
         if (($test->start_date <= Carbon::now() && $test->exam_holding_type == Constant::$SPECIAL_DATE_AND_TIME) ||

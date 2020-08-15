@@ -474,7 +474,17 @@ class PlansController extends BaseController
             'category_id' => $plan->category->id,
             'grade' => $grade,
             'field' => $field,
-            'courses' => $courses
+            'courses' => $courses,
+            'installment_types' => $plan->installment_types()->get()->map(function ($installment) {
+                return [
+                    'id' => $installment->id,
+                    'title' => $installment->title,
+                    'director' => $installment->director,
+                    'percentage_of_price_increase' => $installment->percentage_of_price_increase,
+                    'discount_disable' => $installment->discount_disable,
+                    'span' => $installment->span
+                ];
+            })
         ];
 
         return $plan;
