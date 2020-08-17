@@ -108,12 +108,12 @@ return [
     'update_success' => 'آیتم با موفقیت ویرایش شد',
 
     // CRUD reorder view
-    'reorder'                      => 'Reorder',
-    'reorder_text'                 => 'Use drag&drop to reorder.',
-    'reorder_success_title'        => 'Done',
-    'reorder_success_message'      => 'Your order has been saved.',
-    'reorder_error_title'          => 'Error',
-    'reorder_error_message'        => 'Your order has not been saved.',
+    'reorder'                      => 'تغییر ترتیب',
+    'reorder_text'                 => '.برای تغییر ترتیب موارد را با موس جا به جا کنید',
+    'reorder_success_title'        => 'انجام شد',
+    'reorder_success_message'      => '.ترتیب شما ذخیره شد',
+    'reorder_error_title'          => 'خطا',
+    'reorder_error_message'        => '.ترتیب شما ذخیره نشد',
 
     // CRUD yes/no
     'yes' => 'بله',

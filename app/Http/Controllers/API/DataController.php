@@ -30,7 +30,7 @@ class DataController extends BaseController
     }
 
     public function getCategoryList(Request $req){
-        $categories = Category::all()->map(function ($category) {
+        $categories = Category::orderBy('rgt')->get()->map(function ($category) {
             return [
                 'id' => $category->id,
                 'title' => $category->title,
@@ -38,7 +38,6 @@ class DataController extends BaseController
                 'logo' => $category->logo
             ];
         });
-
         return $this->sendResponse(Constant::$SUCCESS, $categories);
     }
 
@@ -53,4 +52,6 @@ class DataController extends BaseController
 
         return $this->sendResponse(Constant::$SUCCESS, $helps);
     }
+
+
 }

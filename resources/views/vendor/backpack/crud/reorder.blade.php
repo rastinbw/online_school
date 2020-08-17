@@ -1,17 +1,24 @@
 @extends('backpack::layout')
 
+{{--@section('header')--}}
+{{--<section class="content-header">--}}
+{{--    <h1>--}}
+{{--        <span class="text-capitalize">{!! $crud->getHeading() ?? $crud->entity_name_plural !!}</span>--}}
+{{--        <small>{!! $crud->getSubheading() ?? trans('backpack::crud.reorder').' '.$crud->entity_name_plural !!}.</small>--}}
+{{--    </h1>--}}
+{{--    <ol class="breadcrumb">--}}
+{{--        <li><a href="{{ url(config('backpack.base.route_prefix'), 'dashboard') }}">{{ trans('backpack::crud.admin') }}</a></li>--}}
+{{--        <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>--}}
+{{--        <li class="active">{{ trans('backpack::crud.reorder') }}</li>--}}
+{{--    </ol>--}}
+{{--</section>--}}
+{{--@endsection--}}
 @section('header')
-<section class="content-header">
-    <h1>
-        <span class="text-capitalize">{!! $crud->getHeading() ?? $crud->entity_name_plural !!}</span>
-        <small>{!! $crud->getSubheading() ?? trans('backpack::crud.reorder').' '.$crud->entity_name_plural !!}.</small>
-    </h1>
-    <ol class="breadcrumb">
-        <li><a href="{{ url(config('backpack.base.route_prefix'), 'dashboard') }}">{{ trans('backpack::crud.admin') }}</a></li>
-        <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
-        <li class="active">{{ trans('backpack::crud.reorder') }}</li>
-    </ol>
-</section>
+    <section style="padding-top: 5px" class="content-header">
+        <h1 style="text-align: right;">
+            <span  style="font-size: 25px" >{{ $crud->entity_name }} جدید </span>
+        </h1>
+    </section>
 @endsection
 
 @section('content')
@@ -54,13 +61,13 @@ function tree_element($entry, $key, $all_entries, $crud)
 ?>
 
 @if ($crud->hasAccess('list'))
-    <a href="{{ url($crud->route) }}" class="hidden-print"><i class="fa fa-angle-double-left"></i> {{ trans('backpack::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a>
+    <a style="display: block; text-align: right" href="{{ url($crud->route) }}">{{ trans('backpack::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span>  &nbsp<i class="fa fa-angle-double-right"></i></a><br><br>
 @endif
 
-<div class="row m-t-20">
+<div class="row" style="margin-right: 60px;margin-left: 60px">
     <div class="{{ $crud->getReorderContentClass() }}">
 
-        <div class="col-md-12">
+        <div class="col-md-12 col-md-offset-2" style="margin: auto; text-align: right">
 
             <div class="panel padding-10">
 

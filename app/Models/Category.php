@@ -19,7 +19,7 @@ class Category extends Model
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = ['title', 'logo', 'description'];
+    protected $fillable = ['title', 'logo', 'description', 'parent_id', 'lft', 'rgt', 'depth'];
     // protected $hidden = [];
     // protected $dates = [];
 

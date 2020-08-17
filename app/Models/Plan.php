@@ -20,7 +20,7 @@ class Plan extends Model
     // public $timestamps = false;
     // protected $guarded = ['id'];
     protected $fillable = [
-        'title','region_one_price','region_two_price','region_three_price', 'is_free', 'is_full',
+        'title','region_one_price','region_two_price','region_three_price', 'is_free', 'is_full', 'parent_id', 'lft', 'rgt', 'depth',
         'sub_description','description', 'cover', 'category_id' ,'field_id','grade_id', 'discount', 'slider_plan_id'
     ];
     // protected $hidden = [];

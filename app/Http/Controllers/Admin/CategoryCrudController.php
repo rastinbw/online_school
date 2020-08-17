@@ -30,6 +30,9 @@ class CategoryCrudController extends CrudController
         $this->crud->setRoute(config('backpack.base.route_prefix') . '/category');
         $this->crud->setEntityNameStrings('دسته بندی', 'دسته بندی ها');
 
+        $this->crud->allowAccess('reorder');
+        $this->crud->enableReorder('title', 1);
+
         /*
         |--------------------------------------------------------------------------
         | CrudPanel Configuration
@@ -79,6 +82,7 @@ class CategoryCrudController extends CrudController
                 'label' => 'عنوان',
             ],
         ]);
+
     }
 
     public function edit($id)

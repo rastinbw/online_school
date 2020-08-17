@@ -8,6 +8,7 @@ use App\Exports\TestRecordsExport;
 use App\Includes\Constant;
 use App\Includes\Helper;
 use App\Includes\Skyroom;
+use App\Models\Course;
 use App\Models\CourseAccess;
 use App\Models\Field;
 use App\Models\Grade;
@@ -82,6 +83,11 @@ class StudentCrudController extends CrudController
 //            $pc->registerInPlan($student, $plan);
 //        }
 
+//        foreach (Course::all() as $course){
+//            $new = $string = str_replace('classroom.mahtaschool.ir/ch', 'www.skyroom.online/ch/amirdaneshmand08', $course->room_url);
+//            $course->room_url = $new;
+//            $course->save();
+//        }
         /*
         |--------------------------------------------------------------------------
         | CrudPanel Configuration

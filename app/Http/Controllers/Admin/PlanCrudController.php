@@ -43,6 +43,8 @@ class PlanCrudController extends CrudController
         $this->crud->setRoute(config('backpack.base.route_prefix') . '/plan');
         $this->crud->setEntityNameStrings('طرح', 'طرح ها ');
 
+        $this->crud->allowAccess('reorder');
+        $this->crud->enableReorder('title', 1);
         /*
         |--------------------------------------------------------------------------
         | CrudPanel Configuration
