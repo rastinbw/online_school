@@ -60,7 +60,7 @@ class PlansController extends BaseController
 
         array_push($query, ['category_id', '=', $category_id]);
 
-        $plans = Plan::where($query)->orWhere($orQuery)->get()->map(function ($plan) {
+        $plans = Plan::where($query)->orWhere($orQuery)->orderBy('rgt')->get()->map(function ($plan) {
             return $this->buildPlanObject($plan);
         })->toArray();
 

@@ -98,14 +98,24 @@ class LandingPageCrudController extends CrudController
             [
                 'name' => 'description',
                 'label' => '* توضیحات',
-                'type' => 'textarea',
-                'attributes' => [
-                    'dir' => 'rtl',
-                ],
-                'wrapperAttributes' => [
-                    'dir' => 'rtl',
+                'type' => 'summernote',
+                'options' => [
+                    'lang' => 'fa-IR',
+                    'maximumImageFileSize' => '1100000',
+                    'height' => '300',
                 ],
             ],
+//            [
+//                'name' => 'description',
+//                'label' => '* توضیحات',
+//                'type' => 'textarea',
+//                'attributes' => [
+//                    'dir' => 'rtl',
+//                ],
+//                'wrapperAttributes' => [
+//                    'dir' => 'rtl',
+//                ],
+//            ],
             [
                 'label' => '<label style="color:#e55619">( فایل انتخابی باید به فرمت
                             <label style="font-family:Arial, Helvetica, sans-serif;">jpeg, jpg</label> و حداکثر حجم 5 مگابایت باشد )</label> کاور *',

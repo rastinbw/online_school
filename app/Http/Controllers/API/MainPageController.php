@@ -8,6 +8,7 @@ use App\Models\About;
 use App\Models\Course;
 use App\Models\Link;
 use App\Models\Plan;
+use App\Models\SchoolConfig;
 use App\Models\SliderPlan;
 use App\Models\Student;
 use App\Models\Teacher;
@@ -31,7 +32,8 @@ class MainPageController extends BaseController
             'about' => $this->getAbout(),
             'teachers' => $this->getTeachers(),
             'courses' => $this->getCourses(),
-            'sliders' => $this->getSliders()
+            'sliders' => $this->getSliders(),
+            'hotlink' => $this->getHotLink()
         ];
 
         return $this->sendResponse(Constant::$SUCCESS, $page);
@@ -73,7 +75,22 @@ class MainPageController extends BaseController
     }
 
     private function getTeachers(){
-        return Teacher::all()->shuffle();
+        $teachers = Teacher::all()->shuffle();
+        $teachers = $teachers->map(function ($teacher){
+            $default = "images/teachers/default.png";
+            return [
+                'id' => $teacher->id,
+                'avatar' => $teacher->avatar ? $teacher->avatar : $default,
+                'first_name' => $teacher->first_name,
+                'last_name' => $teacher->last_name,
+                'graduation' => $teacher->graduation,
+                'record' => $teacher->record,
+                'compilation' => $teacher->compilation,
+                'description' => $teacher->description
+            ];
+        });
+
+        return $teachers;
     }
 
     private function getCourses()
@@ -102,5 +119,17 @@ class MainPageController extends BaseController
         });
 
         return $sliders;
+    }
+
+    public function getHotLink(){
+        $config = SchoolConfig::find(1);
+
+        if ($config->hot_link_title == null || $config->hot_link_url == null)
+            return null;
+
+        return [
+            'title' => $config->hot_link_title,
+            'url' => $config->hot_link_url
+        ];
     }
 }
