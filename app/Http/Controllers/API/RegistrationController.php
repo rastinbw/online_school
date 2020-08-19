@@ -337,6 +337,9 @@ class RegistrationController extends BaseController
             $lpIp->lp = $lp_id;
             $lpIp->ip = $req->ip();
             $lpIp->save();
+
+            $lp->visit_count = $lp->visit_count + 1;
+            $lp->save();
         }
 
         $result = [

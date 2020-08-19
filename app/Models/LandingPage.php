@@ -19,7 +19,7 @@ class LandingPage extends Model
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = ['plan_id', 'title', 'button_text', 'cover', 'lp_link', 'video_link', 'description', 'second_title'];
+    protected $fillable = ['plan_id','visit_count', 'title', 'button_text', 'cover', 'lp_link', 'video_link', 'description', 'second_title'];
     // protected $hidden = [];
     // protected $dates = [];
 

@@ -139,6 +139,10 @@ class LandingPageCrudController extends CrudController
                 'name' => 'lp_link',
                 'label' => 'لینک اشتراک گزاری',
             ],
+            [
+                'name' => 'visit_count',
+                'label' => 'تعداد بازدید',
+            ],
         ]);
     }
 
