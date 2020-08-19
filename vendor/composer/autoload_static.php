@@ -715,6 +715,7 @@ class ComposerStaticInitf092cf6aaed29093d6014e0cefbb52b3
         'App\\Models\\InstallmentType' => __DIR__ . '/../..' . '/app/Models/InstallmentType.php',
         'App\\Models\\LandingPage' => __DIR__ . '/../..' . '/app/Models/LandingPage.php',
         'App\\Models\\Link' => __DIR__ . '/../..' . '/app/Models/Link.php',
+        'App\\Models\\LpIp' => __DIR__ . '/../..' . '/app/Models/LpIp.php',
         'App\\Models\\Message' => __DIR__ . '/../..' . '/app/Models/Message.php',
         'App\\Models\\NationalCodePlanPair' => __DIR__ . '/../..' . '/app/Models/NationalCodePlanPair.php',
         'App\\Models\\Plan' => __DIR__ . '/../..' . '/app/Models/Plan.php',

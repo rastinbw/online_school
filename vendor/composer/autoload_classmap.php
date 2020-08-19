@@ -122,6 +122,7 @@ return array(
     'App\\Models\\InstallmentType' => $baseDir . '/app/Models/InstallmentType.php',
     'App\\Models\\LandingPage' => $baseDir . '/app/Models/LandingPage.php',
     'App\\Models\\Link' => $baseDir . '/app/Models/Link.php',
+    'App\\Models\\LpIp' => $baseDir . '/app/Models/LpIp.php',
     'App\\Models\\Message' => $baseDir . '/app/Models/Message.php',
     'App\\Models\\NationalCodePlanPair' => $baseDir . '/app/Models/NationalCodePlanPair.php',
     'App\\Models\\Plan' => $baseDir . '/app/Models/Plan.php',

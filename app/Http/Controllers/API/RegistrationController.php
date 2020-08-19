@@ -9,6 +9,7 @@ use App\Includes\Constant;
 use App\Includes\Helper;
 use App\Includes\HttpRequest;
 use App\Models\LandingPage;
+use App\Models\LpIp;
 use App\Models\NationalCodePlanPair;
 use App\Models\Plan;
 use App\Models\Student;
@@ -319,13 +320,26 @@ class RegistrationController extends BaseController
         }
     }
 
-    public function getLandingPage(Request $req, $lp_id){
+    public function getLandingPage(Request $req, $lp_id)
+    {
         $lp = LandingPage::find($lp_id);
 
         if (!$lp)
             return $this->sendResponse(Constant::$LP_NOT_FOUND, null);
 
-        $result =  [
+        // save ip
+        if (!LpIp::where([
+            ['ip', $req->ip()],
+            ['lp', $lp_id],
+        ])->exists()
+        ) {
+            $lpIp = new LpIp();
+            $lpIp->lp = $lp_id;
+            $lpIp->ip = $req->ip();
+            $lpIp->save();
+        }
+
+        $result = [
             'id' => $lp->id,
             'plan_id' => $lp->plan_id,
             'title' => $lp->title,
@@ -339,4 +353,5 @@ class RegistrationController extends BaseController
         return $this->sendResponse(Constant::$SUCCESS, $result);
 
     }
+
 }
