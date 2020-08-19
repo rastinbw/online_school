@@ -99,7 +99,7 @@ class MainPageController extends BaseController
         $courses = $courses->map(function ($course){
             return [
                 'id' => $course->id,
-                'title' => $course->title,
+                'title' => ($course->display_title) ? $course->display_title : $course->title,
                 'day' => $course->online_day,
                 'teacher' => $course->teacher->name
             ];

@@ -21,3 +21,4 @@ $one_record_id = 1;
 <li><a href='{{ backpack_url('transaction') }}'><span>تراکنش ها</span> <i class='fa fa-money'></i></a></li>
 <li><a href="{{url(URL::to('admin/link/'.$one_record_id.'/edit'))}}"><span>لینک های ارتباطی</span> <i class="fa fa-link"></i></a></li>
 <li><a href="{{url(URL::to('admin/about/'.$one_record_id.'/edit'))}}"><span>درباره ما</span> <i class="fa fa-info-circle"></i></a></li>
+<li><a href="{{url(URL::to('admin/schoolConfig/'.$one_record_id.'/edit'))}}"><span>تنظیمات</span> <i class="fa fa-image "></i></a></li>

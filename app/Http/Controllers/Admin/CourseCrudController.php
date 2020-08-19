@@ -88,6 +88,17 @@ class CourseCrudController extends CrudController
                     'dir' => 'rtl',
                 ],
             ],
+            [
+                'name' => 'display_title',
+                'label' => 'عنوان نمایشی',
+                'type' => 'text',
+                'attributes' => [
+                    'dir' => 'rtl',
+                ],
+                'wrapperAttributes' => [
+                    'dir' => 'rtl',
+                ],
+            ],
             // LAUNCH DATE
             [
                 'name' => 'launch_date_day',
@@ -304,6 +315,10 @@ class CourseCrudController extends CrudController
             [
                 'name' => 'title',
                 'label' => 'عنوان',
+            ],
+            [
+                'name' => 'display_title',
+                'label' => 'عنوان نمایشی',
             ],
             [
                 'name' => 'status',

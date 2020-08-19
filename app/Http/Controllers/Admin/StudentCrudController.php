@@ -132,6 +132,14 @@ class StudentCrudController extends CrudController
                 'label' => 'شماره تماس',
             ],
             [
+                'name' => 'province',
+                'label' => 'استان',
+            ],
+            [
+                'name' => 'city',
+                'label' => 'شهر',
+            ],
+            [
                 'name' => 'status',
                 'label' => 'وضعیت',
                 'type' => 'select_from_array',

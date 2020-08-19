@@ -112,7 +112,7 @@ class Helper
         return floor($i * 100) / 100.0;
     }
 
-    public function getProvinces()
+    public static function getProvinces()
     {
         return array(
             1 => "آذربایجان‌شرقی",

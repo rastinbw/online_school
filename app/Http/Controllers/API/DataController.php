@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 
 use App\Includes\Constant;
+use App\Includes\Helper;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Grade;
@@ -51,6 +52,14 @@ class DataController extends BaseController
         });
 
         return $this->sendResponse(Constant::$SUCCESS, $helps);
+    }
+
+    public function getProvinces(){
+        return $this->sendResponse(Constant::$SUCCESS, Helper::getProvinces());
+    }
+
+    public function getCities($p_id){
+        return $this->sendResponse(Constant::$SUCCESS, Helper::getCities($p_id));
     }
 
 

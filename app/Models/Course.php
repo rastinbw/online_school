@@ -21,7 +21,7 @@ class Course extends Model
     // public $timestamps = false;
     // protected $guarded = ['id'];
     protected $fillable = [
-        'title','launch_date_year','launch_date_month','launch_date_day','online_day','start_hour','course_done',
+        'title', 'display_title', 'launch_date_year','launch_date_month','launch_date_day','online_day','start_hour','course_done',
         'start_min','finish_hour','finish_min','teacher_id','status', 'description', 'tag_id', 'room_id', 'room_url',
         'sessions_number', 'guest_login', 'guest_limit', 'op_login_first', 'max_users', 'is_online', 'is_free'
     ];

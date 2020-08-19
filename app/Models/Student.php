@@ -20,7 +20,7 @@ class Student extends Model
     // public $timestamps = false;
     // protected $guarded = ['id'];
     protected $fillable = [
-        'landing_page_id', 'verification_code','verified','token','first_name','last_name','national_code', 'home_number','phone_number',
+        'landing_page_id','province', 'city', 'verification_code','verified','token','first_name','last_name','national_code', 'home_number','phone_number',
         'parent_phone_number','parent_code', 'password','email','address','gender','grade_id','field_id',
         'enrollment_certificate_image','national_card_image', 'region', 'sky_room_id', 'unprotected_password', 'status'
     ];

@@ -312,7 +312,7 @@ class PlansController extends BaseController
 
         return [
             "id" => $course->id,
-            "title" => $course->title,
+            'title' => ($course->display_title) ? $course->display_title : $course->title,
             "launch_date_year" => $course->launch_date_year,
             "launch_date_month" => $course->launch_date_month,
             "launch_date_day" => $course->launch_date_day,
@@ -349,7 +349,7 @@ class PlansController extends BaseController
     {
         return [
             "id" => $course->id,
-            "title" => $course->title,
+            'title' => ($course->display_title) ? $course->display_title : $course->title,
             "launch_date_year" => $course->launch_date_year,
             "launch_date_month" => $course->launch_date_month,
             "launch_date_day" => $course->launch_date_day,

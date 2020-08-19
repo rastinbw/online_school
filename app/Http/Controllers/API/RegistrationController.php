@@ -104,9 +104,11 @@ class RegistrationController extends BaseController
         $student->first_name = $req->input('first_name');
         $student->last_name = $req->input('last_name');
         $student->referrer_code = Helper::convertPersianToEnglish($req->input('referrer_code'));
-        $student->region = $req->input('region');;
-        $student->grade_id = $req->input('grade_id');;
-        $student->field_id = $req->input('field_id');;
+        $student->region = $req->input('region');
+        $student->grade_id = $req->input('grade_id');
+        $student->field_id = $req->input('field_id');
+        $student->province = $req->input('province');
+        $student->city = $req->input('city');
         $student->password = Hash::make($password);
 
         $student->token = bin2hex(random_bytes(16));
@@ -134,6 +136,35 @@ class RegistrationController extends BaseController
             CourseTestCrudController::generateStudentPlanTestRecords($plan->id, $student->id);
         }
         SkyRoomController::addStudentToRooms($access_list, $student->sky_room_id);
+
+        // send registration sms
+        $url = 'https://api.kavenegar.com/v1/' .
+            env('SMS_API_KEY') .
+            '/verify/lookup.json?receptor=' .
+            $student->phone_number .
+            '&template=' .
+            env('TEMPLATE_REGISTRATION_SMS') .
+            '&token=' .
+            $student->first_name .
+            '&token2=' .
+            $student->last_name;
+
+        $http = new HttpRequest($url);
+        $http->get();
+
+//        $username = "09112332659";
+//        $password = "2594913294";
+//        $from = "+98100070801111";
+//        $pattern_code = env('TEMPLATE_REGISTRATION_SMS');
+//        $to = array($student->phone_number);
+//        $input_data = array("firstname" => $student->first_name, "lastname" => $student->last_name);
+//        $url = "https://ippanel.com/patterns/pattern?username=" . $username . "&password=" . urlencode($password) . "&from=$from&to=" . json_encode($to) . "&input_data=" . urlencode(json_encode($input_data)) . "&pattern_code=$pattern_code";
+//        $handler = curl_init($url);
+//        curl_setopt($handler, CURLOPT_CUSTOMREQUEST, "POST");
+//        curl_setopt($handler, CURLOPT_POSTFIELDS, $input_data);
+//        curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
+//        $response = curl_exec($handler);
+//        return $response;
 
         $lp = ($student->landing_page_id) ? LandingPage::find($student->landing_page_id) : null;
         $plan_id = ($lp) ? $lp->plan_id : null;
@@ -172,6 +203,7 @@ class RegistrationController extends BaseController
         if (!$student)
             return $this->sendResponse(Constant::$INVALID_TOKEN, null);
 
+        // todo remove pass_threshold comment
         $data = [
             'is_profile_completed' => $student->is_profile_completed,
             // 'passed_threshold' => $student->created_at <= Carbon::now()->subHours(336)->toDateTimeString() ? 1 : 0,

@@ -14,7 +14,9 @@
 Route::get('/', function () {
     return \File::get(public_path() . '/index.html');
 });
-
+Route::get('/signup', function () {
+    return \File::get(public_path() . '/index.html');
+});
 Route::get('/register', function () {
     return \File::get(public_path() . '/index.html');
 });
@@ -24,6 +26,12 @@ Route::get('/tutorials', function () {
 Route::get('/categories', function () {
     return \File::get(public_path() . '/index.html');
 });
+Route::get('/parentView/{code}', function () {
+    return \File::get(public_path() . '/index.html');
+});
+Route::get('/lp/{id}', function () {
+    return \File::get(public_path() . '/index.html');
+});
 Route::get('/plans/{id}', function () {
     return \File::get(public_path() . '/index.html');
 });
@@ -31,6 +39,12 @@ Route::get('/dashboard/{payment_id}/transaction', function () {
     return \File::get(public_path() . '/index2.html');
 });
 Route::get('/dashboard', function () {
+    return \File::get(public_path() . '/index2.html');
+});
+Route::get('/dashboard/{test_id}/scores', function () {
+    return \File::get(public_path() . '/index2.html');
+});
+Route::get('dashboard/mytests', function () {
     return \File::get(public_path() . '/index2.html');
 });
 Route::get('/b9f3e91f74cc7967b90c.worker.js', function () {
@@ -75,6 +89,8 @@ Route::get('/api/grades', 'API\DataController@getGradeList');
 Route::get('/api/fields', 'API\DataController@getFieldList');
 Route::get('/api/categories', 'API\DataController@getCategoryList');
 Route::get('/api/helps', 'API\DataController@getHelpList');
+Route::get('/api/provinces', 'API\DataController@getProvinces');
+Route::get('/api/cities/{p_id}', 'API\DataController@getCities');
 
 // Plans Routes
 Route::get('/api/plans/{category_id}/{tag_id}/{grade_id}/{field_id}', 'API\PlansController@getPlanList');

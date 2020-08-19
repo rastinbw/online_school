@@ -30,6 +30,7 @@ Route::group([
     CRUD::resource('sliderPlan', 'SliderPlanCrudController');
     CRUD::resource('smsTemplate', 'SmsTemplateCrudController');
     CRUD::resource('landingPage', 'LandingPageCrudController');
+    CRUD::resource('schoolConfig', 'SchoolConfigCrudController');
 
 
     // Course Crud Routes

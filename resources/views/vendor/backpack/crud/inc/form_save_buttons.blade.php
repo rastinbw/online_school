@@ -2,7 +2,7 @@
 
     <input type="hidden" name="save_action" value="{{ $saveAction['active']['value'] }}">
 
-    @if(!isset($about) && !isset($link))
+    @if(!isset($about) && !isset($link) && !isset($schoolConfig))
         <a style="font-size: 15px;font-weight: 600" href="{{ url($crud->route) }}" class="btn btn-danger"> لغو عملیات &nbsp;<span class="fa fa-ban"></span></a>
     @endif
 
