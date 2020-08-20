@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\StudentsExport;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
@@ -9,6 +10,7 @@ use App\Http\Requests\LandingPageRequest as StoreRequest;
 use App\Http\Requests\LandingPageRequest as UpdateRequest;
 use Backpack\CRUD\CrudPanel;
 use Exception;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Class LandingPageCrudController
@@ -144,6 +146,14 @@ class LandingPageCrudController extends CrudController
                 'label' => 'تعداد بازدید',
             ],
         ]);
+
+        $this->crud->addButtonFromView('line', 'export_lp_students', 'export_lp_students', 'beginning');
+
+    }
+
+    public function exportLpStudents($lp_id){
+        $export = new StudentsExport(null, null, null, $lp_id);
+        return Excel::download($export, 'لیست دانش آموزان.xlsx');;
     }
 
     public function store(StoreRequest $request)

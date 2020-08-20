@@ -55,6 +55,10 @@ Route::group([
         Route::get('export_students', 'CourseCrudController@exportCourseStudents');
     });
 
+    Route::group(['prefix' => 'landingPage/{lp_id}'], function () {
+        Route::get('export_lp_students', 'LandingPageCrudController@exportLpStudents');
+    });
+
     // Plan Crud Routes
     Route::group(['prefix' => 'plan/{plan_id}'], function () {
         Route::get('export_students', 'PlanCrudController@exportPlanStudents');
@@ -79,5 +83,6 @@ Route::group([
     Route::get('student/{id}/export_student_referees', 'StudentCrudController@exportStudentReferees');
     Route::get('student/{id}/national_card/download', 'StudentCrudController@download_national_card');
     Route::get('student/{id}/enrollment_certificate/download', 'StudentCrudController@download_enrollment_certificate');
+
 
 }); // this should be the absolute last line of this file

@@ -5,6 +5,7 @@ use App\Includes\Constant;
 use App\Includes\Helper;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\LandingPage;
 use App\Models\Plan;
 use App\Models\Student;
 use Maatwebsite\Excel\Concerns\FromArray;
@@ -14,11 +15,13 @@ class StudentsExport implements FromArray
     private $plan_id;
     private $course_id;
     private $student_id;
+    private $lp_id;
 
-    public function __construct($plan_id = null, $course_id = null, $student_id = null) {
+    public function __construct($plan_id = null, $course_id = null, $student_id = null, $lp_id = null) {
         $this->plan_id = $plan_id;
         $this->course_id = $course_id;
         $this->student_id = $student_id;
+        $this->lp_id = $lp_id;
     }
 
     public function array(): array
@@ -60,6 +63,11 @@ class StudentsExport implements FromArray
         } elseif($this->student_id != null) {
             $student = Student::find($this->student_id);
             $students = Student::where('referrer_code', $student->student_refer_code)->get();
+        } elseif ($this->lp_id != null){
+            $students = Student::where([
+                ['landing_page_id' , $this->lp_id],
+                ['verified' , 1]
+            ])->get();
         } else{
             $students = Student::all();
 //            $students = [];
