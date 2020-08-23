@@ -14,6 +14,7 @@ Route::group([
     CRUD::resource('course', 'CourseCrudController');
     CRUD::resource('field', 'FieldCrudController');
     CRUD::resource('grade', 'GradeCrudController');
+    CRUD::resource('academicYear', 'AcademicYearCrudController');
     CRUD::resource('plan', 'PlanCrudController');
     CRUD::resource('test', 'TestCrudController');
     CRUD::resource('tag', 'TagCrudController');
@@ -37,6 +38,7 @@ Route::group([
     Route::group(['prefix' => 'course/search/{course_id}'], function () {
         CRUD::resource('session', 'CourseSessionCrudController');
         CRUD::resource('test', 'CourseTestCrudController');
+        CRUD::resource('note', 'CourseNoteCrudController');
 
         // Test Crud Routes
         Route::group(['prefix' => 'test/{test_id}'], function () {

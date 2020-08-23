@@ -341,6 +341,9 @@ class PlansController extends BaseController
             }, $sessions),
             "tests" => $course->tests->map(function ($test) use ($student) {
                 return $this->buildTestObject($test, $student);
+            }),
+            "notes" => $course->notes->map(function ($note) {
+                return $this->buildNoteObject($note);
             })
         ];
     }
@@ -399,6 +402,15 @@ class PlansController extends BaseController
         return [
             "id" => $tag->id,
             "title" => $tag->title,
+        ];
+    }
+
+    private function buildNoteObject($note)
+    {
+        return [
+            "id" => $note->id,
+            "title" => $note->title,
+            "file" => $note->file,
         ];
     }
 

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LandingPageRequest extends FormRequest
+class NoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,12 +26,8 @@ class LandingPageRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:100',
-            'title' => 'required|max:100',
-            'second_title' => 'required|max:100',
-            'description' => 'required|max:5000',
-            'button_text' => 'required|max:20',
-            'cover' => 'required',
+            'title' => 'required|max:255',
+            'file' => 'required',
         ];
     }
 
@@ -56,7 +52,7 @@ class LandingPageRequest extends FormRequest
     {
         return [
             'required' => 'مقداردهی این فیلد الزامی میباشد.',
-            'max' => 'تعداد کاراکتر ها از حداکثر مجاز عبور کرده است.',
+            'max' => 'حداکثر 255 کاراکتر',
         ];
     }
 }

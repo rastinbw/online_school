@@ -5,7 +5,7 @@ namespace App\Models;
 use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 
-class LandingPage extends Model
+class Note extends Model
 {
     use CrudTrait;
 
@@ -15,11 +15,11 @@ class LandingPage extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'landing_pages';
+    protected $table = 'notes';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     // protected $guarded = ['id'];
-    protected $fillable = ['name', 'plan_id','visit_count', 'title', 'button_text', 'cover', 'lp_link', 'video_link', 'description', 'second_title'];
+    protected $fillable = ['title', 'file', 'course_id'];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -28,45 +28,22 @@ class LandingPage extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    public function setCoverAttribute($value)
+    public function setFileAttribute($value)
     {
-        $attribute_name = "cover";
+        $attribute_name = "file";
         $disk = "public";
-        $destination_path = "images/landing_pages";
+        $destination_path = "files/notes";
 
-        // if the image was erased
-        if ($value==null) {
-            // delete the image from disk
-            \Storage::disk($disk)->delete($this->{$attribute_name});
+        $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
 
-            // set null in the database column
-            $this->attributes[$attribute_name] = null;
-        }
-
-        // if a base64 was sent, store it in the db
-        if (starts_with($value, 'data:image'))
-        {
-            // 0. Make the image
-            $image = \Image::make($value);
-
-            // 1. Generate a filename.
-            if ($this->{$attribute_name} != null)
-                $filename = str_after($this->{$attribute_name}, $destination_path . '/');
-            else
-                $filename = md5($value.time()).'.jpg';
-
-            // 2. Store the image on disk.
-            \Storage::disk($disk)->put($destination_path.'/'.$filename, $image->stream());
-            // 3. Save the path to the database
-            $this->attributes[$attribute_name] = $destination_path.'/'.$filename;
-        }
+        // return $this->{$attribute_name}; // uncomment if this is a translatable field
     }
 
     public static function boot()
     {
         parent::boot();
         static::deleting(function($obj) {
-            \Storage::disk('public')->delete($obj->cover);
+            \Storage::disk('public')->delete($obj->file);
         });
     }
 
@@ -75,16 +52,10 @@ class LandingPage extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function plan()
+    public function course()
     {
-        return $this->belongsTo('App\Models\Plan');
+        return $this->belongsTo('App\Models\Course');
     }
-
-    public function students()
-    {
-        return $this->hasMany('App\Models\Student');
-    }
-
     /*
     |--------------------------------------------------------------------------
     | SCOPES

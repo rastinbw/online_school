@@ -32,7 +32,7 @@
     <?php
         $url = explode('/', Request::url());
         $last_section = $url[sizeof($url) - 1];
-        $is_prev_courses = $last_section === 'session' || $last_section === 'test';
+        $is_prev_courses = $last_section === 'session' || $last_section === 'test' || $last_section === 'note';
         $is_prev_students = $last_section === 'courseaccess' || $last_section === 'testaccess';
         $is_prev_plans = $last_section === 'message';
     ?>

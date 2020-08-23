@@ -76,6 +76,11 @@ class Course extends Model
         return $this->belongsTo('App\Models\Teacher');
     }
 
+    public function notes()
+    {
+        return $this->hasMany('App\Models\Note');
+    }
+
     public function sessions()
     {
         return $this->hasMany('App\Models\Session');

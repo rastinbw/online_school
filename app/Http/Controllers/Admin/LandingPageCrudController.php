@@ -38,6 +38,17 @@ class LandingPageCrudController extends CrudController
 
         $this->crud->addFields([
             [
+                'name' => 'name',
+                'label' => '* نام',
+                'type' => 'text',
+                'attributes' => [
+                    'dir' => 'rtl',
+                ],
+                'wrapperAttributes' => [
+                    'dir' => 'rtl',
+                ],
+            ],
+            [
                 'name' => 'title',
                 'label' => '* عنوان',
                 'type' => 'text',
@@ -107,17 +118,6 @@ class LandingPageCrudController extends CrudController
                     'height' => '300',
                 ],
             ],
-//            [
-//                'name' => 'description',
-//                'label' => '* توضیحات',
-//                'type' => 'textarea',
-//                'attributes' => [
-//                    'dir' => 'rtl',
-//                ],
-//                'wrapperAttributes' => [
-//                    'dir' => 'rtl',
-//                ],
-//            ],
             [
                 'label' => '<label style="color:#e55619">( فایل انتخابی باید به فرمت
                             <label style="font-family:Arial, Helvetica, sans-serif;">jpeg, jpg</label> و حداکثر حجم 5 مگابایت باشد )</label> کاور *',
@@ -134,8 +134,15 @@ class LandingPageCrudController extends CrudController
 
         $this->crud->addColumns([
             [
+                'name' => 'name',
+                'label' => 'نام',
+            ],
+            [
                 'name' => 'title',
                 'label' => 'عنوان',
+            ],[
+                'name' => 'second_title',
+                'label' => 'عنوان دوم',
             ],
             [
                 'name' => 'lp_link',

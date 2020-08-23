@@ -378,6 +378,7 @@ class CourseCrudController extends CrudController
         });
 
         $this->crud->addButtonFromView('line', 'export_course_students', 'export_course_students', 'beginning');
+        $this->crud->addButtonFromView('line', 'course_note', 'course_note', 'beginning');
         $this->crud->addButtonFromView('line', 'course_test', 'course_test', 'beginning');
         $this->crud->addButtonFromView('line', 'course_session', 'course_session', 'beginning');
 
