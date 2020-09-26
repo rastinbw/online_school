@@ -101,7 +101,7 @@ class MainPageController extends BaseController
                 'id' => $course->id,
                 'title' => ($course->display_title) ? $course->display_title : $course->title,
                 'day' => $course->online_day,
-                'teacher' => $course->teacher->name
+                'teacher' => ($course->teacher) ? $course->teacher->name : "بدون استاد"
             ];
         });
 

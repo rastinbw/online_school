@@ -274,7 +274,7 @@ class PlansController extends BaseController
                     'course_title' => Course::find($session['course_id'])->title,
                     'session_title' => $session['title'],
                     'teacher_name' => Course::find($session['course_id'])->teacher->name,
-                    'teacher_avatar' => Course::find($session['course_id'])->avatar,
+                    'teacher_avatar' => Course::find($session['course_id'])->teacher->avatar,
                     'room_url' => Course::find($session['course_id'])->room_url,
                     'start_hour' => $session['start_hour'],
                     'start_min' => $session['start_min'],

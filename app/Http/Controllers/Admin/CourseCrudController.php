@@ -453,10 +453,11 @@ class CourseCrudController extends CrudController
         $errors = [];
         $plans = Course::find($request->input('id'))->plans;
         foreach ($plans as $plan){
-            if($request->input('is_free') && !$plan->is_free)
-                array_push($errors, ".این کلاس در طرح غیر رایگان {$plan->title} قرار دارد");
-            else if(!$request->input('is_free') && $plan->is_free)
-                array_push($errors, ".این کلاس در طرح رایگان {$plan->title} قرار دارد");
+//            if($request->input('is_free') && !$plan->is_free)
+//                array_push($errors, ".این کلاس در طرح غیر رایگان {$plan->title} قرار دارد");
+//            else
+              if(!$request->input('is_free') && $plan->is_free)
+                  array_push($errors, ".این کلاس در طرح رایگان {$plan->title} قرار دارد");
         }
 
         if (sizeof($errors) > 0)

@@ -30,7 +30,7 @@ class LandingPageRequest extends FormRequest
             'title' => 'required|max:100',
             'second_title' => 'required|max:100',
             'description' => 'required|max:5000',
-            'button_text' => 'required|max:20',
+            'button_text' => 'required|max:50',
             'cover' => 'required',
         ];
     }

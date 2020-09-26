@@ -411,8 +411,8 @@ class PlanCrudController extends CrudController
             $course = Course::find($id);
             if ($request->input('is_free') && !$course->is_free)
                 array_push($errors, ".کلاس {$course->title} رایگان نمیباشد");
-            else if (!$request->input('is_free') && $course->is_free)
-                array_push($errors, ".کلاس {$course->title} رایگان میباشد");
+//            else if (!$request->input('is_free') && $course->is_free)
+//                array_push($errors, ".کلاس {$course->title} رایگان میباشد");
         }
 
         if (sizeof($errors) > 0)
@@ -460,8 +460,8 @@ class PlanCrudController extends CrudController
             $course = Course::find($id);
             if ($request->input('is_free') && !$course->is_free)
                 array_push($errors, ".کلاس {$course->title} رایگان نمیباشد");
-            else if (!$request->input('is_free') && $course->is_free)
-                array_push($errors, ".کلاس {$course->title} رایگان میباشد");
+//            else if (!$request->input('is_free') && $course->is_free)
+//                array_push($errors, ".کلاس {$course->title} رایگان میباشد");
         }
 
         if (sizeof($errors) > 0)

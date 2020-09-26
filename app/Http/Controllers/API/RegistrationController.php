@@ -54,14 +54,25 @@ class RegistrationController extends BaseController
             $student->landing_page_id = $req->input('lp_id');
             $student->save();
 
-            $url = 'https://api.kavenegar.com/v1/' .
-                env('SMS_API_KEY') .
-                '/verify/lookup.json?receptor=' .
-                $student->phone_number .
-                '&template=' .
-                env('TEMPLATE_VERIFY') .
-                '&token=' .
-                $code;
+//            $url = 'https://api.kavenegar.com/v1/' .
+//                env('SMS_API_KEY') .
+//                '/verify/lookup.json?receptor=' .
+//                $student->phone_number .
+//                '&template=' .
+//                env('TEMPLATE_VERIFY') .
+//                '&token=' .
+//                $code;
+//
+//            $http = new HttpRequest($url);
+//            $http->get();
+
+            $to = array($student->phone_number);
+            $input_data = array("verification-code" => $code);
+            $url = "https://ippanel.com/patterns/pattern?username="
+                . env('FARAZ_USERNAME') . "&password=" . env('FARAZ_PASSWORD')
+                . "&from=". env('FARAZ_SENDER_NUMBER') ."&to=" . json_encode($to)
+                . "&input_data=" . urlencode(json_encode($input_data))
+                . "&pattern_code=" . env('PATTERN_CODE_VERIFY_FARAZ');
 
             $http = new HttpRequest($url);
             $http->get();
@@ -139,33 +150,27 @@ class RegistrationController extends BaseController
         SkyRoomController::addStudentToRooms($access_list, $student->sky_room_id);
 
         // send registration sms
-        $url = 'https://api.kavenegar.com/v1/' .
-            env('SMS_API_KEY') .
-            '/verify/lookup.json?receptor=' .
-            $student->phone_number .
-            '&template=' .
-            env('TEMPLATE_REGISTRATION_SMS') .
-            '&token=' .
-            $student->first_name .
-            '&token2=' .
-            $student->last_name;
+        //$url = 'https://api.kavenegar.com/v1/' .
+        //    env('SMS_API_KEY') .
+        //    '/verify/lookup.json?receptor=' .
+        //    $student->phone_number .
+        //    '&template=' .
+        //    env('TEMPLATE_REGISTRATION_SMS') .
+        //   '&token=' .
+        //   $student->first_name .
+        //    '&token2=' .
+        //    $student->last_name;
+
+        $to = array($student->phone_number);
+        $input_data = array("firstname" => $student->first_name, "lastname" => $student->last_name);
+        $url = "https://ippanel.com/patterns/pattern?username="
+            . env('FARAZ_USERNAME') . "&password=" . env('FARAZ_PASSWORD')
+            . "&from=". env('FARAZ_SENDER_NUMBER') ."&to=" . json_encode($to)
+            . "&input_data=" . urlencode(json_encode($input_data))
+            . "&pattern_code=" . env('PATTERN_CODE_REGISTRATION_SMS');
 
         $http = new HttpRequest($url);
         $http->get();
-
-//        $username = "09112332659";
-//        $password = "2594913294";
-//        $from = "+98100070801111";
-//        $pattern_code = env('TEMPLATE_REGISTRATION_SMS');
-//        $to = array($student->phone_number);
-//        $input_data = array("firstname" => $student->first_name, "lastname" => $student->last_name);
-//        $url = "https://ippanel.com/patterns/pattern?username=" . $username . "&password=" . urlencode($password) . "&from=$from&to=" . json_encode($to) . "&input_data=" . urlencode(json_encode($input_data)) . "&pattern_code=$pattern_code";
-//        $handler = curl_init($url);
-//        curl_setopt($handler, CURLOPT_CUSTOMREQUEST, "POST");
-//        curl_setopt($handler, CURLOPT_POSTFIELDS, $input_data);
-//        curl_setopt($handler, CURLOPT_RETURNTRANSFER, true);
-//        $response = curl_exec($handler);
-//        return $response;
 
         $lp = ($student->landing_page_id) ? LandingPage::find($student->landing_page_id) : null;
         $plan_id = ($lp) ? $lp->plan_id : null;
@@ -272,14 +277,22 @@ class RegistrationController extends BaseController
             . '/api/student/password/reset/form/'
             . $student->token;
 
-        $url = 'https://api.kavenegar.com/v1/' .
-            env('SMS_API_KEY') .
-            '/verify/lookup.json?receptor=' .
-            $student->phone_number .
-            '&template=' .
-            env('TEMPLATE_FORGET_PASSWORD') .
-            '&token=' .
-            $link;
+//        $url = 'https://api.kavenegar.com/v1/' .
+//            env('SMS_API_KEY') .
+//            '/verify/lookup.json?receptor=' .
+//            $student->phone_number .
+//            '&template=' .
+//            env('TEMPLATE_FORGET_PASSWORD') .
+//            '&token=' .
+//            $link;
+
+        $to = array($student->phone_number);
+        $input_data = array("link" => $link);
+        $url = "https://ippanel.com/patterns/pattern?username="
+            . env('FARAZ_USERNAME') . "&password=" . env('FARAZ_PASSWORD')
+            . "&from=". env('FARAZ_SENDER_NUMBER') ."&to=" . json_encode($to)
+            . "&input_data=" . urlencode(json_encode($input_data))
+            . "&pattern_code=" . env('PATTERN_CODE_FORGET_PASSWORD');
 
         $http = new HttpRequest($url);
         $http->get();

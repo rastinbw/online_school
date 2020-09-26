@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\InstallmentsExport;
 use App\Exports\StudentsExport;
 use App\Exports\TestRecordsExport;
+use App\Http\Controllers\API\PlansController;
 use App\Includes\Constant;
 use App\Includes\Helper;
 use App\Includes\Skyroom;
@@ -13,6 +14,7 @@ use App\Models\CourseAccess;
 use App\Models\Field;
 use App\Models\Grade;
 use App\Models\Installment;
+use App\Models\Plan;
 use App\Models\Student;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
@@ -78,7 +80,7 @@ class StudentCrudController extends CrudController
 //        }
 
 //        foreach (Plan::all() as $plan){
-//            $student = Student::where('national_code', '2580974555')->first();
+//            $student = Student::where('national_code', '2581095598')->first();
 //            $pc = new PlansController();
 //            $pc->registerInPlan($student, $plan);
 //        }
