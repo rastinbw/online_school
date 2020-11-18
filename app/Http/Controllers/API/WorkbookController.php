@@ -65,6 +65,8 @@ class WorkbookController extends BaseController
         ])->first();
         $record->workbook = $workbook;
         $record->save();
+
+        return $check_table;
     }
 
     private function getOptionAnswer($options, $q_number)
@@ -178,8 +180,8 @@ class WorkbookController extends BaseController
         } else {
             $counts = array_count_values($check_table);
             $total_counts = sizeof($check_table);
-            $total_correct_counts = isset($counts[Constant::$WRONG]) ? $counts[Constant::$WRONG] : 0;
-            $total_wrong_counts = isset($counts[Constant::$CORRECT]) ? $counts[Constant::$CORRECT] : 0;
+            $total_correct_counts = isset($counts[Constant::$CORRECT]) ? $counts[Constant::$CORRECT] : 0;
+            $total_wrong_counts = isset($counts[Constant::$WRONG]) ? $counts[Constant::$WRONG] : 0;
             $total_empty_counts = isset($counts[Constant::$EMPTY]) ? $counts[Constant::$EMPTY] : 0;
 
             $workbook[Constant::$TOTAL][Constant::$QUESTIONS_COUNT] = $total_counts;
@@ -314,6 +316,9 @@ class WorkbookController extends BaseController
             $variance += pow(($i - $avg), 2);
 
         $s =(float)sqrt($variance/$num_of_elements);
+
+        if($s == 0)
+            return 5000;
 
         // z value
         $z = ($value - $avg) / $s;

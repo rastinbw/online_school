@@ -374,11 +374,11 @@ class TestsController extends BaseController
         $record->save();
 
         $wc = new WorkbookController();
-        $wc->saveWorkbook($student, $test, $record->answers);
+        $result = $wc->saveWorkbook($student, $test, $record->answers);
 
         return $this->sendResponse(
             Constant::$SUCCESS,
-            null
+            $result
         );
     }
 

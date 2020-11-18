@@ -39,9 +39,14 @@ class CourseSessionCrudController extends SessionCrudController
         $this->data['title'] = $this->crud->getTitle() ?? trans('backpack::crud.add').' '.$this->crud->entity_name;
 
         $course_id = \Route::current()->parameter('course_id');
-        if(Course::find($course_id)->is_free)
+        $course = Course::find($course_id);
+        if($course->is_free)
             $this->data['fields']['is_free']['wrapperAttributes']['style'] = 'display:none';
 
+        $this->data['fields']['start_hour']['value'] = $course->start_hour;
+        $this->data['fields']['start_min']['value'] = $course->start_min;
+        $this->data['fields']['finish_hour']['value'] = $course->finish_hour;
+        $this->data['fields']['finish_min']['value'] = $course->finish_min;
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         return view($this->crud->getCreateView(), $this->data);
     }

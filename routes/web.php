@@ -10,51 +10,55 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return \File::get(public_path() . '/index.html');
-});
-Route::get('/signup', function () {
-    return \File::get(public_path() . '/index.html');
-});
-Route::get('/register', function () {
-    return \File::get(public_path() . '/index.html');
-});
-Route::get('/tutorials', function () {
-    return \File::get(public_path() . '/index.html');
-});
-Route::get('/categories', function () {
-    return \File::get(public_path() . '/index.html');
-});
-Route::get('/parentView/{code}', function () {
-    return \File::get(public_path() . '/index.html');
-});
-Route::get('/lp/{id}', function () {
-    return \File::get(public_path() . '/index.html');
-});
-Route::get('/plans/{id}', function () {
-    return \File::get(public_path() . '/index.html');
-});
-Route::get('/dashboard/{payment_id}/transaction', function () {
-    return \File::get(public_path() . '/index2.html');
-});
-Route::get('/dashboard', function () {
-    return \File::get(public_path() . '/index2.html');
-});
-Route::get('/dashboard/{test_id}/scores', function () {
-    return \File::get(public_path() . '/index2.html');
-});
-Route::get('dashboard/mytests', function () {
-    return \File::get(public_path() . '/index2.html');
-});
-Route::get('/b9f3e91f74cc7967b90c.worker.js', function () {
-    return \File::get(public_path() . '/b9f3e91f74cc7967b90c.worker.js');
-});
-
-
+//
+//Route::get('/', function () {
+//    return \File::get(public_path() . '/index.html');
+//});
+//Route::get('/signup', function () {
+//    return \File::get(public_path() . '/index.html');
+//});
+//Route::get('/register', function () {
+//    return \File::get(public_path() . '/index.html');
+//});
+//Route::get('/tutorials', function () {
+//    return \File::get(public_path() . '/index.html');
+//});
+//Route::get('/categories', function () {
+//    return \File::get(public_path() . '/index.html');
+//});
+//Route::get('/parentView/{code}', function () {
+//    return \File::get(public_path() . '/index.html');
+//});
+//Route::get('/lp/{id}', function () {
+//    return \File::get(public_path() . '/index.html');
+//});
+//Route::get('/plans/{id}', function () {
+//    return \File::get(public_path() . '/index.html');
+//});
+//Route::get('/dashboard/{payment_id}/transaction', function () {
+//    return \File::get(public_path() . '/index2.html');
+//});
+//Route::get('/dashboard', function () {
+//    return \File::get(public_path() . '/index2.html');
+//});
+//Route::get('/dashboard/{test_id}/scores', function () {
+//    return \File::get(public_path() . '/index2.html');
+//});
+//Route::get('dashboard/mytests', function () {
+//    return \File::get(public_path() . '/index2.html');
+//});
+//Route::get('/b9f3e91f74cc7967b90c.worker.js', function () {
+//    return \File::get(public_path() . '/b9f3e91f74cc7967b90c.worker.js');
+//});
+//
+//
 
 // CRUD
 Route::get('/admin/dashboard', function () {
+    return redirect('/admin/student');
+});
+
+Route::get('/', function () {
     return redirect('/admin/student');
 });
 
@@ -103,6 +107,9 @@ Route::post('/api/course/online', 'API\PlansController@getCurrentOnlineCourse');
 Route::post('/api/plan/free/register', 'API\PlansController@registerInFreePlan');
 Route::post('/api/plan/registered', 'API\PlansController@hasRegisteredToPlan');
 Route::get('/api/plan/{plan_id}/info', 'API\PlansController@getPlanInfo');
+Route::post('/add_student_to_plan', 'Admin\EditPlanStudentsController@add_student_to_plan');
+Route::post('/remove_students_from_plan', 'Admin\EditPlanStudentsController@remove_students_from_plan');
+
 
 // Transaction Routes
 Route::post('/api/records/financial', 'API\TransactionController@getStudentFinancialRecords');

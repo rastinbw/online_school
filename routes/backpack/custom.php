@@ -66,6 +66,7 @@ Route::group([
         Route::get('export_students', 'PlanCrudController@exportPlanStudents');
         Route::get('export_plan_transactions', 'PlanCrudController@exportPlanTransactions');
         Route::get('import_students', 'PlanCrudController@importPlanStudents');
+        Route::get('edit_plan_students', 'EditPlanStudentsController@show_students');
     });
     Route::post('import_plan_students_excel', 'PlanCrudController@importPlanStudentsExcel');
 

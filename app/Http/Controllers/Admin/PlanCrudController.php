@@ -73,6 +73,17 @@ class PlanCrudController extends CrudController
 
         $this->crud->addFields([
             [
+                'name' => 'name',
+                'label' => '* نام',
+                'type' => 'text',
+                'attributes' => [
+                    'dir' => 'rtl',
+                ],
+                'wrapperAttributes' => [
+                    'dir' => 'rtl',
+                ],
+            ],
+            [
                 'name' => 'title',
                 'label' => '* عنوان',
                 'type' => 'text',
@@ -261,6 +272,10 @@ class PlanCrudController extends CrudController
 
         $this->crud->addColumns([
             [
+                'name' => 'name',
+                'label' => 'نام',
+            ],
+            [
                 'name' => 'title',
                 'label' => 'عنوان',
             ],
@@ -314,6 +329,7 @@ class PlanCrudController extends CrudController
         });
 
         $this->crud->addButtonFromView('line', 'plan_message', 'plan_message', 'beginning');
+        $this->crud->addButtonFromView('line', 'edit_plan_students', 'edit_plan_students', 'beginning');
         $this->crud->addButtonFromView('line', 'export_plan_students', 'export_plan_students', 'beginning');
         $this->crud->addButtonFromView('line', 'export_plan_transactions', 'export_plan_transactions', 'beginning');
         $this->crud->addButtonFromView('line', 'import_plan_students', 'import_plan_students', 'beginning');
@@ -508,6 +524,12 @@ class PlanCrudController extends CrudController
         if (sizeof($errors) > 0) {
             return response()->json(array('errors' => $errors), 400);
         }
+
+//        foreach (Plan::find($id)->students as $student){
+//            foreach ($plan->courses as $course){
+//
+//            }
+//        }
 
         return $this->crud->delete($id);
     }

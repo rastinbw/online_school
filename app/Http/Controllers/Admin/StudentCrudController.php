@@ -6,6 +6,7 @@ use App\Exports\InstallmentsExport;
 use App\Exports\StudentsExport;
 use App\Exports\TestRecordsExport;
 use App\Http\Controllers\API\PlansController;
+use App\Http\Controllers\API\WorkbookController;
 use App\Includes\Constant;
 use App\Includes\Helper;
 use App\Includes\Skyroom;
@@ -16,6 +17,8 @@ use App\Models\Grade;
 use App\Models\Installment;
 use App\Models\Plan;
 use App\Models\Student;
+use App\Models\Test;
+use App\Models\TestRecord;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
@@ -89,6 +92,14 @@ class StudentCrudController extends CrudController
 //            $new = $string = str_replace('classroom.mahtaschool.ir/ch', 'www.skyroom.online/ch/amirdaneshmand08', $course->room_url);
 //            $course->room_url = $new;
 //            $course->save();
+//        }
+
+//        foreach (TestRecord::all() as $record){
+//            $wc = new WorkbookController();
+//            $s = Student::find($record->student_id);
+//            $t = Test::find($record->test_id);
+//            if ($record->answers != null)
+//                $wc->saveWorkbook($s, $t, array($record->answers));
 //        }
         /*
         |--------------------------------------------------------------------------

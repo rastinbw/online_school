@@ -11,6 +11,8 @@ use App\Models\Course;
 use App\Models\CourseAccess;
 use App\Models\Plan;
 use App\Models\Session;
+use App\Models\Student;
+use App\Models\TestAccess;
 use Illuminate\Http\Request;
 
 class PlansController extends BaseController
@@ -39,6 +41,35 @@ class PlansController extends BaseController
         AccessController::createStudentPlanTestAccesses($plan->id, $student->id, 1);
         CourseTestCrudController::generateStudentPlanTestRecords($plan->id, $student->id);
         SkyRoomController::addStudentToRooms($access_list, $student->sky_room_id);
+
+    }
+
+    public function unregisterFromPlan($student_id, $plan)
+    {
+//        $plan->students()->detach($student_id);
+//        foreach ($plan->courses as $course){
+//            $belongs_to_course_via_other_plans = false;
+//            foreach ($course->plans as $plan){
+//                if ($plan->students->contains($student_id)) {
+//                    $belongs_to_course_via_other_plans = true;
+//                    break;
+//                }
+//            }
+//
+//            if (!$belongs_to_course_via_other_plans){
+//                CourseAccess::where([
+//                    ['student_id',$student_id],
+//                    ['course_id',$course->id]
+//                ])->delete();
+//
+//                foreach ($course->tests as $test){
+//                    TestAccess::where([
+//                        ['student_id',$student_id],
+//                        ['test_id',$test->id]
+//                    ])->delete();
+//                }
+//            }
+//        }
 
     }
 
@@ -130,7 +161,7 @@ class PlansController extends BaseController
             array_push(
                 $days[$course['online_day']],
                 [
-                    "title" => $course['title'],
+                    "title" => ($course['display_title']) ? $course['display_title'] : $course['title'],
                     "start_hour" => $course['start_hour'],
                     "start_min" => $course['start_min'],
                     "finish_hour" => $course['finish_hour'],
@@ -270,8 +301,9 @@ class PlansController extends BaseController
         $data = null;
         if (sizeof($sessions) > 0) {
             $data = array_map(function ($session) {
+                $course = Course::find($session['course_id']);
                 return [
-                    'course_title' => Course::find($session['course_id'])->title,
+                    'course_title' => ($course->display_title) ? $course->display_title : $course->title,
                     'session_title' => $session['title'],
                     'teacher_name' => Course::find($session['course_id'])->teacher->name,
                     'teacher_avatar' => Course::find($session['course_id'])->teacher->avatar,
